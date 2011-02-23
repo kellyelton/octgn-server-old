@@ -1,1 +1,13 @@
-
+<?xml version="1.0"?>
+<ServerOptions>
+	<Binding>
+		<BindInt>*</BindInt>
+		<BindPort>5599</BindPort>
+	</Binding>
+	<Database>
+		<Host>localhost</Host>
+		<User>user</User>
+		<Pass>kpass9082</Pass>
+		<DB>octgn</DB>
+	</Database>
+</ServerOptions>
