@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oserver", "oserver.csproj", "{49B4C975-A6D4-4054-980C-ED784C7E0399}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetShit", "..\..\NetShit\trunk\NetShit.csproj", "{B637235E-7CC5-4600-BA00-46F5FACD2DE4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{49B4C975-A6D4-4054-980C-ED784C7E0399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49B4C975-A6D4-4054-980C-ED784C7E0399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49B4C975-A6D4-4054-980C-ED784C7E0399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49B4C975-A6D4-4054-980C-ED784C7E0399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B637235E-7CC5-4600-BA00-46F5FACD2DE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B637235E-7CC5-4600-BA00-46F5FACD2DE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B637235E-7CC5-4600-BA00-46F5FACD2DE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B637235E-7CC5-4600-BA00-46F5FACD2DE4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = oserver.csproj
+	EndGlobalSection
+EndGlobal

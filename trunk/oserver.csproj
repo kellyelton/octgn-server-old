@@ -10,6 +10,7 @@
     <RootNamespace>oserver</RootNamespace>
     <AssemblyName>oserver</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <StartupObject>Skylabs.oserver</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -36,13 +37,20 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ConsoleHand.cs" />
+    <Compile Include="ConsoleHelper\ConsoleGlove.cs" />
+    <Compile Include="ConsoleHelper\ConsoleHand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\octgnFX\Octgn.Server\Octgn.Server.csproj">
-      <Project>{6DD203AF-5003-4AF3-A982-67F10B704D4A}</Project>
-      <Name>Octgn.Server</Name>
+    <ProjectReference Include="..\..\NetShit\trunk\NetShit.csproj">
+      <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
+      <Name>NetShit</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ConsoleHelper\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ServerOptions.xml" />
   </ItemGroup>
 </Project>
