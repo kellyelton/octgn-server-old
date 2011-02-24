@@ -27,12 +27,10 @@ namespace Skylabs.ConsoleHelper
 		}
 		public void Start()
 		{
-			thread.Start();	
-			thread.Join();
+			thread.Start();
 		}
 		private void run()
 		{
-			writeLine("yo",true);
 			while(!endIt)
 			{
 				if(cin.Peek() != 0)
@@ -40,7 +38,7 @@ namespace Skylabs.ConsoleHelper
 					lastEvent = ConsoleEvent.Read;
 					glove.onInput(cin.ReadLine());
 					
-					writeCL();
+					writeCT();
 				}
 				else
 				{
@@ -48,7 +46,7 @@ namespace Skylabs.ConsoleHelper
 				}
 			}
 		}
-		public void writeCL()
+		public void writeCT()
 		{
 			if(lastEvent != ConsoleEvent.ComText)
 			{
@@ -56,12 +54,12 @@ namespace Skylabs.ConsoleHelper
 				lastEvent = ConsoleEvent.ComText;
 			}
 		}
-		public void writeLine(String st, Boolean writeComLine)
+		public void writeLine(String st, Boolean writeComText)
 		{
 			cout.WriteLine(st);
 			lastEvent = ConsoleEvent.Wrote;			
-			if(writeComLine)
-				writeCL();
+			if(writeComText)
+				writeCT();
 
 		}
 		public void end()

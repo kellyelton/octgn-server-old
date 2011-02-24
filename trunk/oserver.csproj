@@ -7,10 +7,10 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{49B4C975-A6D4-4054-980C-ED784C7E0399}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>oserver</RootNamespace>
+    <RootNamespace>Skylabs.oserver</RootNamespace>
     <AssemblyName>oserver</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <StartupObject>Skylabs.oserver</StartupObject>
+    <StartupObject>Skylabs.oserver.MainClass</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,12 +33,15 @@
   <ItemGroup>
     <Reference Include="System">
     </Reference>
+    <Reference Include="System.Xml">
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ConsoleHelper\ConsoleGlove.cs" />
     <Compile Include="ConsoleHelper\ConsoleHand.cs" />
+    <Compile Include="ServerProperties.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -51,6 +54,9 @@
     <Folder Include="ConsoleHelper\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ServerOptions.xml" />
+    <None Include="ServerOptions.xml">
+      <DeployService-Deploy>true</DeployService-Deploy>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>
