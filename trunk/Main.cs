@@ -18,16 +18,26 @@ namespace Skylabs.oserver
 		public ConsoleHand Con;
 		public void Start()
 		{
-			main.Con = new ConsoleHand("oserver: ",this);			
+			main.Con = new ConsoleHand("oserver: ",this);
+            if (!LoadProperties())
+                return;
 			main.Con.Start();
-			LoadProperties();
 			
 		}
-		public void LoadProperties()
-		{
-			Properties = new XmlDocument();
-			Properties.LoadXml("ServerOptions.xml");
-		}
+        public Boolean LoadProperties()
+        {
+            Properties = new XmlDocument();
+            try
+            {
+                Properties.LoadXml("ServerOptions.xml");
+            }
+            catch (XmlException ex)
+            {
+                return false;
+            }
+            return true;
+
+        }
 		public void onInput(string str)
 		{
 			main.Con.writeLine(str,true);

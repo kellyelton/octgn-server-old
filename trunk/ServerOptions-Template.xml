@@ -5,9 +5,9 @@
 		<BindPort>5599</BindPort>
 	</Binding>
 	<Database>
-		<Host>localhost</Host>
-		<User>user</User>
-		<Pass>kpass9082</Pass>
-		<DB>octgn</DB>
+		<Host></Host>
+		<User></User>
+		<Pass></Pass>
+		<DB></DB>
 	</Database>
 </ServerOptions>
