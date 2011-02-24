@@ -12,11 +12,20 @@ namespace Skylabs.oserver
 		{
 			main = new MainClass();
 			main.Start();
-            Console.ForegroundColor = ConsoleColor.White;
 		}
 		
 		public XmlDocument Properties{get;set;}
 
+        public MainClass()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            RegisterHandlers();
+        }
+        ~MainClass()
+        {
+            ConsoleHand.end();
+            UnregisterHandlers();
+        }
         public void RegisterHandlers()
         {
             ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
@@ -46,8 +55,7 @@ namespace Skylabs.oserver
         }
 		public void Start()
 		{
-            RegisterHandlers();
-            ConsoleHand.Start("O-Lobby: ");
+            ConsoleHand.Start("O-Lobby: ",ConsoleColor.White,ConsoleColor.DarkGreen);
 			if (!LoadProperties())
 				return;
             ConsoleHand.writeCT();

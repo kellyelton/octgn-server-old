@@ -40,10 +40,9 @@ namespace Skylabs.ConsoleHelper
         }
         public void writeEvent(Boolean addToEventLog)
         {
-            ConsoleColor cc = Console.ForegroundColor;
             Console.ForegroundColor = Color;
-            Console.WriteLine(Header + Message, true);
-            Console.ForegroundColor = cc;
+            ConsoleHand.writeLine(Header + Message, false);
+            ConsoleHand.writeCT();
             if(addToEventLog)
                 ConsoleEventLog.addEvent(this,false);
         }

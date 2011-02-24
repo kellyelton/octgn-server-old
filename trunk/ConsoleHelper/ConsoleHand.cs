@@ -13,13 +13,18 @@ namespace Skylabs.ConsoleHelper
 		private static Boolean endIt;
 		private static enConsoleEvent lastEvent;
 		public static String CommandText{get;set;}
+        public static ConsoleColor InputColor { get; set; }
+        public static ConsoleColor CommandTextColor { get; set; }
 
-        public static void Start(String commandText)
+        public static void Start(String commandText, ConsoleColor commandTextColor,ConsoleColor inputcolor)
 		{
             thread = new Thread(run);
             endIt = false;
             lastEvent = enConsoleEvent.Wrote;
             CommandText = commandText;
+            InputColor = inputcolor;
+            CommandTextColor = commandTextColor;
+            Console.ForegroundColor = commandTextColor;
 			thread.Start();
 		}
         private static void handleInput(ConsoleMessage cm)
@@ -50,8 +55,10 @@ namespace Skylabs.ConsoleHelper
 		{
 			if(lastEvent != enConsoleEvent.ComText)
 			{
+                Console.ForegroundColor = CommandTextColor;
                 Console.Out.Write(CommandText);
 				lastEvent = enConsoleEvent.ComText;
+                Console.ForegroundColor = InputColor;
 			}
 		}
         public static void writeLine(String st, Boolean writeComText)
