@@ -1,5 +1,6 @@
 using System;
 using Skylabs.ConsoleHelper;
+using System.Xml;
 
 namespace Skylabs.oserver
 {
