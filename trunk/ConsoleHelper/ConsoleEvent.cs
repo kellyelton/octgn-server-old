@@ -26,7 +26,7 @@ namespace Skylabs.ConsoleHelper
         {
             Message = message;
             Date = DateTime.Now;
-            Color = ConsoleHand.CommandTextColor;
+            Color = ConsoleWriter.OutputColor;
         }
         public ConsoleEvent(String header, String message, ConsoleColor color)
         {
@@ -42,8 +42,8 @@ namespace Skylabs.ConsoleHelper
         public void writeEvent(Boolean addToEventLog)
         {
             Console.ForegroundColor = Color;
-            ConsoleHand.writeLine(Header + Message, false);
-            ConsoleHand.writeCT();
+            ConsoleWriter.writeLine(Header + Message, false);
+            ConsoleWriter.writeCT();
             if(addToEventLog)
                 ConsoleEventLog.addEvent(this,false);
         }

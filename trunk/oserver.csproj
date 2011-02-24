@@ -41,9 +41,11 @@
     <Compile Include="ConsoleHelper\ConsoleEventError.cs" />
     <Compile Include="ConsoleHelper\ConsoleEventLog.cs" />
     <Compile Include="ConsoleHelper\ConsoleMessage.cs" />
+    <Compile Include="ConsoleHelper\ConsoleReader.cs" />
+    <Compile Include="ConsoleHelper\ConsoleWriter.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ConsoleHelper\ConsoleHand.cs" />
+    <Compile Include="Networking\Listener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

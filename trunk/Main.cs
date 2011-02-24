@@ -3,52 +3,78 @@ using Skylabs.ConsoleHelper;
 using System.Xml;
 using System.IO;
 using System.Threading;
+using Skylabs.Networking;
 
 namespace Skylabs.oserver
 {
 	public class MainClass
 	{
         public static XmlDocument Properties { get; set; }
+        public static Listener Server { get; set; }
+        private static bool endIt = false;
 
 		public static void Main (string[] args)
 		{
             Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
-            ConsoleHand.Start("O-Lobby: ", ConsoleColor.White, ConsoleColor.DarkGreen);
+            ConsoleWriter.CommandText = "O-Lobby: ";
+            ConsoleWriter.CommandTextColor = ConsoleColor.White;
+            ConsoleWriter.OutputColor = ConsoleColor.Gray;
+            ConsoleReader.InputColor = ConsoleColor.Yellow;
+            ConsoleReader.Start();
             if (!LoadProperties())
                 return;
-            ConsoleHand.writeCT();
-            while (ConsoleHand.ThreadState != System.Threading.ThreadState.Stopped && ConsoleHand.ThreadState != System.Threading.ThreadState.Aborted)
-            {
+            ConsoleWriter.writeCT();
 
+            String host = Properties.GetElementsByTagName("BindInt").Item(0).InnerText;
+            String sport = Properties.GetElementsByTagName("BindPort").Item(0).InnerText;
+            int port =int.Parse(sport) ;
+
+            try
+            {
+                Server = new Listener(host, port);
+            }
+            catch (Exception e)
+            {
+                ConsoleEventLog.addEvent(new ConsoleEventError("Problem with settings 'BindInt' or 'BindPort'.", e), true);
+                Stop();
+            }
+
+            while (endIt == false)
+            {
                 Thread.Sleep(1000);
             }
+            new ConsoleEvent("Quitting...").writeEvent(true);
             UnregisterHandlers();
+            ConsoleReader.Stop();
 		}
+        public static void Stop()
+        {
+            endIt = true;
+        }
         public static void RegisterHandlers()
         {
             ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
-            ConsoleHand.eConsoleInput += new ConsoleHand.ConsoleInputDelegate(ConsoleHand_eConsoleInput);
+            ConsoleReader.eConsoleInput += new ConsoleReader.ConsoleInputDelegate(ConsoleReader_eConsoleInput);
         }
         public static void UnregisterHandlers()
         {
             ConsoleEventLog.eAddEvent -= eLog_eAddEvent;
-            ConsoleHand.eConsoleInput -= ConsoleHand_eConsoleInput;
+            ConsoleReader.eConsoleInput -= ConsoleReader_eConsoleInput;
         }
-        private static void ConsoleHand_eConsoleInput(ConsoleMessage input)
+        private static void ConsoleReader_eConsoleInput(ConsoleMessage input)
         {
             switch (input.Header)
             {
                 case "quit":
-                    new ConsoleEvent("Quitting...").writeEvent(true);
-                    ConsoleHand.end();
+                    Stop();
                     break;
                 case "bake":
                     String ret = "Baking args brah...\n";
                     foreach (ConsoleArgument arg in input.Args)
                     {
                         ret += arg.Argument;
-                        if (arg.Value != "")
+                        if (!String.IsNullOrEmpty(arg.Value))
                             ret += " = " + arg.Value;
                         ret += "\n";
                     }
