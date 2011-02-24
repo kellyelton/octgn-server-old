@@ -26,6 +26,7 @@ namespace Skylabs.ConsoleHelper
         {
             Message = message;
             Date = DateTime.Now;
+            Color = ConsoleHand.CommandTextColor;
         }
         public ConsoleEvent(String header, String message, ConsoleColor color)
         {

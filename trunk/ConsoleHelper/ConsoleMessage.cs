@@ -44,6 +44,7 @@ namespace Skylabs.ConsoleHelper
         }
         private void parseMessage()
         {
+            //TODO better handling of jibberish. Probubly be best to use regex. It'd be a lot cleaner and sexier.
             RawData.TrimStart(new char[1] { ' ' });
             int ws = RawData.IndexOf(' ');
             Header = "";
@@ -61,11 +62,12 @@ namespace Skylabs.ConsoleHelper
                     args.TrimStart(new char[1] { ' ' });
                     if (!args.Equals(""))
                     {
-                        String[] araw = args.Split(new char[1] { '-' });
+                        String[] araw = args.Split(new char[1] { '-' },StringSplitOptions.RemoveEmptyEntries);
                         if (araw.Length != 0)
                         {
                             foreach (String a in araw)
                             {
+                                a.Trim();
                                 ws = a.IndexOf(' ');
                                 if (ws == -1)
                                 {

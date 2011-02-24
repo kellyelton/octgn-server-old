@@ -8,13 +8,23 @@ namespace Skylabs.ConsoleHelper
 	public class ConsoleHand
 	{
         public delegate void ConsoleInputDelegate(ConsoleMessage input);
+
         public static event ConsoleInputDelegate eConsoleInput;
-		private static Thread thread;
-		private static Boolean endIt;
-		private static enConsoleEvent lastEvent;
 		public static String CommandText{get;set;}
+        //TODO create a new color for general output, er something.
         public static ConsoleColor InputColor { get; set; }
         public static ConsoleColor CommandTextColor { get; set; }
+        public static ThreadState ThreadState
+        {
+            get
+            {
+                return thread.ThreadState;
+            }
+        }
+
+        private static Thread thread;
+        private static Boolean endIt;
+        private static enConsoleEvent lastEvent;
 
         public static void Start(String commandText, ConsoleColor commandTextColor,ConsoleColor inputcolor)
 		{

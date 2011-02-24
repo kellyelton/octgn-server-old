@@ -2,41 +2,40 @@ using System;
 using Skylabs.ConsoleHelper;
 using System.Xml;
 using System.IO;
+using System.Threading;
 
 namespace Skylabs.oserver
 {
 	public class MainClass
 	{
-		public static MainClass main;
+        public static XmlDocument Properties { get; set; }
+
 		public static void Main (string[] args)
 		{
-			main = new MainClass();
-			main.Start();
-		}
-		
-		public XmlDocument Properties{get;set;}
-
-        public MainClass()
-        {
             Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
-        }
-        ~MainClass()
-        {
-            ConsoleHand.end();
+            ConsoleHand.Start("O-Lobby: ", ConsoleColor.White, ConsoleColor.DarkGreen);
+            if (!LoadProperties())
+                return;
+            ConsoleHand.writeCT();
+            while (ConsoleHand.ThreadState != System.Threading.ThreadState.Stopped && ConsoleHand.ThreadState != System.Threading.ThreadState.Aborted)
+            {
+
+                Thread.Sleep(1000);
+            }
             UnregisterHandlers();
-        }
-        public void RegisterHandlers()
+		}
+        public static void RegisterHandlers()
         {
             ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
             ConsoleHand.eConsoleInput += new ConsoleHand.ConsoleInputDelegate(ConsoleHand_eConsoleInput);
         }
-        public void UnregisterHandlers()
+        public static void UnregisterHandlers()
         {
             ConsoleEventLog.eAddEvent -= eLog_eAddEvent;
             ConsoleHand.eConsoleInput -= ConsoleHand_eConsoleInput;
         }
-        void ConsoleHand_eConsoleInput(ConsoleMessage input)
+        private static void ConsoleHand_eConsoleInput(ConsoleMessage input)
         {
             switch (input.Header)
             {
@@ -44,24 +43,28 @@ namespace Skylabs.oserver
                     new ConsoleEvent("Quitting...").writeEvent(true);
                     ConsoleHand.end();
                     break;
+                case "bake":
+                    String ret = "Baking args brah...\n";
+                    foreach (ConsoleArgument arg in input.Args)
+                    {
+                        ret += arg.Argument;
+                        if (arg.Value != "")
+                            ret += " = " + arg.Value;
+                        ret += "\n";
+                    }
+                    new ConsoleEvent(ret).writeEvent(true);
+                    break;
                 default:
                     new ConsoleEventError("Invalid command '" + input.RawData + "'.", new Exception("Invalid console command.")).writeEvent(true);
                     break;
             }
         }
-        void eLog_eAddEvent(ConsoleEvent e)
+        private static void eLog_eAddEvent(ConsoleEvent e)
         {
             ConsoleEventLog.SerializeEvents("d:\\elog.xml");
         }
-		public void Start()
-		{
-            ConsoleHand.Start("O-Lobby: ",ConsoleColor.White,ConsoleColor.DarkGreen);
-			if (!LoadProperties())
-				return;
-            ConsoleHand.writeCT();
-		}
 
-		public Boolean LoadProperties()
+        public static Boolean LoadProperties()
 		{
 			Properties = new XmlDocument();
             Boolean ret = true;
