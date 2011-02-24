@@ -40,6 +40,7 @@
     <Compile Include="ConsoleHelper\ConsoleEvent.cs" />
     <Compile Include="ConsoleHelper\ConsoleEventError.cs" />
     <Compile Include="ConsoleHelper\ConsoleEventLog.cs" />
+    <Compile Include="ConsoleHelper\ConsoleMessage.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ConsoleHelper\ConsoleGlove.cs" />

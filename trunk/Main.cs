@@ -12,7 +12,7 @@ namespace Skylabs.oserver
 		{
 			main = new MainClass();
 			main.Start();
-            ConsoleEventLog.SerializeEvents("d:\\elog.xml",main.Con.eLog);
+            Console.ForegroundColor = ConsoleColor.White;
 		}
 		
 		public XmlDocument Properties{get;set;}
@@ -20,12 +20,16 @@ namespace Skylabs.oserver
 		public void Start()
 		{
 			Con = new ConsoleHand("oserver: ",this);
+            ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
 			if (!LoadProperties())
 				return;
 			main.Con.Start();
-
-			
 		}
+
+        void eLog_eAddEvent(ConsoleEvent e)
+        {
+            ConsoleEventLog.SerializeEvents("d:\\elog.xml");
+        }
 		public Boolean LoadProperties()
 		{
 			Properties = new XmlDocument();

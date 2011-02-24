@@ -14,7 +14,6 @@ namespace Skylabs.ConsoleHelper
 		private ConsoleGlove glove;
 		private enConsoleEvent lastEvent;
 		public String CommandText{get;set;}
-		public ConsoleEventLog eLog { get; set; }
 		
 		public ConsoleHand (String CommandText, ConsoleGlove glove)
 		{
@@ -25,7 +24,6 @@ namespace Skylabs.ConsoleHelper
 			this.glove = glove;
 			lastEvent = enConsoleEvent.Wrote;
 			this.CommandText = CommandText;
-			eLog = new ConsoleEventLog();
 		}
 		public void Start()
 		{
@@ -70,7 +68,7 @@ namespace Skylabs.ConsoleHelper
 			Console.ForegroundColor = cone.Color;
 			writeLine(cone.Header + cone.Message,true);
 			Console.ForegroundColor = cc;
-			eLog.addEvent(cone);
+			ConsoleEventLog.addEvent(cone);
 		}
 		public void end()
 		{
