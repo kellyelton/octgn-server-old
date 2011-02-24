@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Skylabs.oserver
 {
-	public class MainClass : ConsoleGlove
+	public class MainClass
 	{
 		public static MainClass main;
 		public static void Main (string[] args)
@@ -16,20 +16,43 @@ namespace Skylabs.oserver
 		}
 		
 		public XmlDocument Properties{get;set;}
-		public ConsoleHand Con;
-		public void Start()
-		{
-			Con = new ConsoleHand("oserver: ",this);
-            ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
-			if (!LoadProperties())
-				return;
-			main.Con.Start();
-		}
 
+        public void RegisterHandlers()
+        {
+            ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
+            ConsoleHand.eConsoleInput += new ConsoleHand.ConsoleInputDelegate(ConsoleHand_eConsoleInput);
+        }
+        public void UnregisterHandlers()
+        {
+            ConsoleEventLog.eAddEvent -= eLog_eAddEvent;
+            ConsoleHand.eConsoleInput -= ConsoleHand_eConsoleInput;
+        }
+        void ConsoleHand_eConsoleInput(ConsoleMessage input)
+        {
+            switch (input.Header)
+            {
+                case "quit":
+                    new ConsoleEvent("Quitting...").writeEvent(true);
+                    ConsoleHand.end();
+                    break;
+                default:
+                    new ConsoleEventError("Invalid command '" + input.RawData + "'.", new Exception("Invalid console command.")).writeEvent(true);
+                    break;
+            }
+        }
         void eLog_eAddEvent(ConsoleEvent e)
         {
             ConsoleEventLog.SerializeEvents("d:\\elog.xml");
         }
+		public void Start()
+		{
+            RegisterHandlers();
+            ConsoleHand.Start("O-Lobby: ");
+			if (!LoadProperties())
+				return;
+            ConsoleHand.writeCT();
+		}
+
 		public Boolean LoadProperties()
 		{
 			Properties = new XmlDocument();
@@ -39,21 +62,17 @@ namespace Skylabs.oserver
             {
                 f = File.Open("ServerOptions.xml", FileMode.Open);
                 Properties.Load(f);
-                Con.writeEvent(new ConsoleEvent("#Event: ", "Settings file loaded.", ConsoleColor.Gray));
+                new ConsoleEvent("#Event: ", "Settings file loaded.", ConsoleColor.Gray).writeEvent(true);
             }
             catch (Exception ex)
             {
                 if (f != null)
                     f.Close();
-                Con.writeEvent(new ConsoleEventError("Could not load the settings file.", ex));
+                new ConsoleEventError("Could not load the settings file.", ex).writeEvent(true);
                 ret = false;
             }
 			return ret;
 
-		}
-		public void onInput(string str)
-		{
-			Con.writeLine(str,true);
 		}
 	}
 }

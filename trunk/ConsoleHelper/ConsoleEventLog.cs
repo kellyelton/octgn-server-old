@@ -15,9 +15,11 @@ namespace Skylabs.ConsoleHelper
         public static event EventEventDelegate eAddEvent = null;
         public static List<ConsoleEvent> Events { get { return _Events; } set { _Events = value;} }
         private static List<ConsoleEvent> _Events = new List<ConsoleEvent>();
-        public static void addEvent(ConsoleEvent con)
+        public static void addEvent(ConsoleEvent con, Boolean writeToConsole)
         {
             Events.Add(con);
+            if (writeToConsole)
+                con.writeEvent(false);
             if (eAddEvent != null)
             {
                 if (eAddEvent.GetInvocationList().Length != 0)
@@ -47,13 +49,8 @@ namespace Skylabs.ConsoleHelper
                     if (!foundit)
                         cTypes.Add(c.GetType());
                 }
-                xs = new XmlSerializer(typeof(ConsoleEvent),cTypes.ToArray());
-                //xs.Serialize(xmlTextWriter, events);
-                foreach (ConsoleEvent c in ConsoleEventLog.Events)
-                {
-                    xs = new XmlSerializer(c.GetType());
-                    xs.Serialize(xmlTextWriter, c);
-                }
+                xs = new XmlSerializer(ConsoleEventLog.Events.GetType(), new XmlAttributeOverrides(), cTypes.ToArray(), new XmlRootAttribute("Events"), "Skylabs.olobby");
+                xs.Serialize(xmlTextWriter, ConsoleEventLog.Events);
 
             }
         }

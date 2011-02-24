@@ -43,7 +43,6 @@
     <Compile Include="ConsoleHelper\ConsoleMessage.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="ConsoleHelper\ConsoleGlove.cs" />
     <Compile Include="ConsoleHelper\ConsoleHand.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

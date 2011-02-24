@@ -7,37 +7,37 @@ namespace Skylabs.ConsoleHelper
 		
 	public class ConsoleHand
 	{
-		private Thread thread;
-		private System.IO.TextReader cin;
-		private System.IO.TextWriter cout;
-		private Boolean endIt;
-		private ConsoleGlove glove;
-		private enConsoleEvent lastEvent;
-		public String CommandText{get;set;}
-		
-		public ConsoleHand (String CommandText, ConsoleGlove glove)
+        public delegate void ConsoleInputDelegate(ConsoleMessage input);
+        public static event ConsoleInputDelegate eConsoleInput;
+		private static Thread thread;
+		private static Boolean endIt;
+		private static enConsoleEvent lastEvent;
+		public static String CommandText{get;set;}
+
+        public static void Start(String commandText)
 		{
-			cin = Console.In;
-			cout = Console.Out;
-			thread = new Thread(run);
-			endIt = false;
-			this.glove = glove;
-			lastEvent = enConsoleEvent.Wrote;
-			this.CommandText = CommandText;
-		}
-		public void Start()
-		{
+            thread = new Thread(run);
+            endIt = false;
+            lastEvent = enConsoleEvent.Wrote;
+            CommandText = commandText;
 			thread.Start();
 		}
-		private void run()
+        private static void handleInput(ConsoleMessage cm)
+        {
+            if(eConsoleInput != null)
+            {
+                if(eConsoleInput.GetInvocationList().Length > 0)
+                    eConsoleInput.Invoke(cm);
+            }
+        }
+        private static void run()
 		{
 			while(!endIt)
 			{
-				if(cin.Peek() != 0)
+				if(Console.In.Peek() != 0)
 				{
 					lastEvent = enConsoleEvent.Read;
-					glove.onInput(cin.ReadLine());
-					
+                    handleInput(new ConsoleMessage(Console.In.ReadLine()));
 					writeCT();
 				}
 				else
@@ -46,31 +46,23 @@ namespace Skylabs.ConsoleHelper
 				}
 			}
 		}
-		public void writeCT()
+        public static void writeCT()
 		{
 			if(lastEvent != enConsoleEvent.ComText)
 			{
-				cout.Write(CommandText);
+                Console.Out.Write(CommandText);
 				lastEvent = enConsoleEvent.ComText;
 			}
 		}
-		public void writeLine(String st, Boolean writeComText)
+        public static void writeLine(String st, Boolean writeComText)
 		{
-			cout.WriteLine(st);
+            Console.Out.WriteLine(st);
 			lastEvent = enConsoleEvent.Wrote;			
 			if(writeComText)
 				writeCT();
 
 		}
-		public void writeEvent(ConsoleEvent cone)
-		{
-			ConsoleColor cc = Console.ForegroundColor;
-			Console.ForegroundColor = cone.Color;
-			writeLine(cone.Header + cone.Message,true);
-			Console.ForegroundColor = cc;
-			ConsoleEventLog.addEvent(cone);
-		}
-		public void end()
+        public static void end()
 		{
 			endIt = true;	
 		}

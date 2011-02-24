@@ -38,5 +38,14 @@ namespace Skylabs.ConsoleHelper
         {
             return Header + Message;
         }
+        public void writeEvent(Boolean addToEventLog)
+        {
+            ConsoleColor cc = Console.ForegroundColor;
+            Console.ForegroundColor = Color;
+            Console.WriteLine(Header + Message, true);
+            Console.ForegroundColor = cc;
+            if(addToEventLog)
+                ConsoleEventLog.addEvent(this,false);
+        }
     }
 }
