@@ -1,6 +1,7 @@
 using System;
 using Skylabs.ConsoleHelper;
 using System.Xml;
+using System.IO;
 
 namespace Skylabs.oserver
 {
@@ -11,36 +12,44 @@ namespace Skylabs.oserver
 		{
 			main = new MainClass();
 			main.Start();
-			
+            ConsoleEventLog.SerializeEvents("d:\\elog.xml",main.Con.eLog);
 		}
 		
 		public XmlDocument Properties{get;set;}
 		public ConsoleHand Con;
 		public void Start()
 		{
-			main.Con = new ConsoleHand("oserver: ",this);
-            if (!LoadProperties())
-                return;
+			Con = new ConsoleHand("oserver: ",this);
+			if (!LoadProperties())
+				return;
 			main.Con.Start();
+
 			
 		}
-        public Boolean LoadProperties()
-        {
-            Properties = new XmlDocument();
+		public Boolean LoadProperties()
+		{
+			Properties = new XmlDocument();
+            Boolean ret = true;
+            FileStream f = null;
             try
             {
-                Properties.LoadXml("ServerOptions.xml");
+                f = File.Open("ServerOptions.xml", FileMode.Open);
+                Properties.Load(f);
+                Con.writeEvent(new ConsoleEvent("#Event: ", "Settings file loaded.", ConsoleColor.Gray));
             }
-            catch (XmlException ex)
+            catch (Exception ex)
             {
-                return false;
+                if (f != null)
+                    f.Close();
+                Con.writeEvent(new ConsoleEventError("Could not load the settings file.", ex));
+                ret = false;
             }
-            return true;
+			return ret;
 
-        }
+		}
 		public void onInput(string str)
 		{
-			main.Con.writeLine(str,true);
+			Con.writeLine(str,true);
 		}
 	}
 }

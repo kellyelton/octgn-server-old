@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 namespace Skylabs.ConsoleHelper
 {
-	public enum ConsoleEvent
+	public enum enConsoleEvent
 	{Read,Wrote,ComText};
 		
 	public class ConsoleHand
@@ -12,8 +12,9 @@ namespace Skylabs.ConsoleHelper
 		private System.IO.TextWriter cout;
 		private Boolean endIt;
 		private ConsoleGlove glove;
-		private ConsoleEvent lastEvent;
+		private enConsoleEvent lastEvent;
 		public String CommandText{get;set;}
+		public ConsoleEventLog eLog { get; set; }
 		
 		public ConsoleHand (String CommandText, ConsoleGlove glove)
 		{
@@ -22,8 +23,9 @@ namespace Skylabs.ConsoleHelper
 			thread = new Thread(run);
 			endIt = false;
 			this.glove = glove;
-			lastEvent = ConsoleEvent.Wrote;
+			lastEvent = enConsoleEvent.Wrote;
 			this.CommandText = CommandText;
+			eLog = new ConsoleEventLog();
 		}
 		public void Start()
 		{
@@ -35,7 +37,7 @@ namespace Skylabs.ConsoleHelper
 			{
 				if(cin.Peek() != 0)
 				{
-					lastEvent = ConsoleEvent.Read;
+					lastEvent = enConsoleEvent.Read;
 					glove.onInput(cin.ReadLine());
 					
 					writeCT();
@@ -48,19 +50,27 @@ namespace Skylabs.ConsoleHelper
 		}
 		public void writeCT()
 		{
-			if(lastEvent != ConsoleEvent.ComText)
+			if(lastEvent != enConsoleEvent.ComText)
 			{
 				cout.Write(CommandText);
-				lastEvent = ConsoleEvent.ComText;
+				lastEvent = enConsoleEvent.ComText;
 			}
 		}
 		public void writeLine(String st, Boolean writeComText)
 		{
 			cout.WriteLine(st);
-			lastEvent = ConsoleEvent.Wrote;			
+			lastEvent = enConsoleEvent.Wrote;			
 			if(writeComText)
 				writeCT();
 
+		}
+		public void writeEvent(ConsoleEvent cone)
+		{
+			ConsoleColor cc = Console.ForegroundColor;
+			Console.ForegroundColor = cone.Color;
+			writeLine(cone.Header + cone.Message,true);
+			Console.ForegroundColor = cc;
+			eLog.addEvent(cone);
 		}
 		public void end()
 		{
