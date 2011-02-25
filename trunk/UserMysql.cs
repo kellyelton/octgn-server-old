@@ -34,7 +34,7 @@ public class UserMysql {
         {
             connection.Open();
             Reader = command.ExecuteReader();
-            while(Reader.Read() != false)
+            while(Reader.Read() == true)
             {
                 if (!Reader.IsDBNull(0))
                 {

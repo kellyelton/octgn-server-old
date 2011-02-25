@@ -11,8 +11,10 @@ namespace Skylabs.oserver
 {
     public class Client : ShitSock
     {
-        public User User { get; set; }
+        public User User { get { return _User;} set { _User = value;} }
         public Boolean LoggedIn { get; set; }
+
+        private User _User = new User();
 
         override public void handleError(Exception e,String error)
         {
@@ -43,7 +45,7 @@ namespace Skylabs.oserver
                 		    }
                 	    }
                 	    SocketMessage sm = new SocketMessage("LOGSUCCESS");
-                	    sm.Arguments.Add(this.User.UserName);
+                	    sm.Arguments.Add(this.User.Username);
                 	    writeMessage(sm);
                         //TODO implement system for handling user log ins and outs
                         //Main.userLoggedIn(this, this.user);
