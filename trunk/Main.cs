@@ -105,6 +105,19 @@ namespace Skylabs.oserver
             }
             return ret;
         }
+        public static String getDailyMessage()
+        {
+            String s = "";
+            try
+            {
+                s = System.IO.File.ReadAllText(getProperty("DailyMessage"));
+            }
+            catch (Exception e)
+            {
+                ConsoleEventLog.addEvent(new ConsoleEventError("Problem opening daily message.", e), true);
+            }
+            return s;
+        }
         public static Boolean LoadProperties()
 		{
 			Properties = new XmlDocument();

@@ -49,6 +49,8 @@
     <Compile Include="ConsoleHelper\ConsoleReader.cs" />
     <Compile Include="ConsoleHelper\ConsoleWriter.cs" />
     <Compile Include="Containers\ClientContainer.cs" />
+    <Compile Include="Containers\GameBox.cs" />
+    <Compile Include="HostedGame.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
@@ -73,5 +75,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="daily.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

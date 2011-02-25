@@ -1,0 +1,16 @@
+﻿Welcome to the OCTGN Lobby.
+type /w username message to whisper someone
+type /r message to reply back to a previous whisper
+press up or down keys to browse last message you sent
+
+If you are hosting or joining a game, select the appropriate IP version as before(v4 or v6) and click host. When joining, the client will cycle through all your available ip's until it connects, or fails(god help us).
+
+Most problems with double users being online, and games not going away have been fixed.
+
+Also, make sure your octgn client says version 1.0.2.5
+
+Added with this version:
+-In chat hyperlinks
+-Search with multiple sets in the deck editor.
+
+Have fun!

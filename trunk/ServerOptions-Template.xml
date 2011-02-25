@@ -10,4 +10,7 @@
 		<DBPass></DBPass>
 		<DB></DB>
 	</Database>
+  <Other>
+    <DailyMessage>daily.txt</DailyMessage>
+  </Other>
 </ServerOptions>
