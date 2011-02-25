@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Skylabs.NetShit;
 
 namespace Skylabs.oserver.Containers
 {
@@ -27,6 +28,16 @@ namespace Skylabs.oserver.Containers
 
         private static List<Client> _Clients = new List<Client>();
 
-
+        public static void AllUserCommand(SocketMessage command)
+        {
+            int intcount = Clients.Count;
+            for(int i=0;i<intcount;i++)
+            {
+                if(Clients[i].Connected)
+                {
+                    Clients[i].writeMessage(command);
+                }
+            }
+        }
     }
 }
