@@ -5,9 +5,9 @@
 		<BindPort>5599</BindPort>
 	</Binding>
 	<Database>
-		<Host></Host>
-		<User></User>
-		<Pass></Pass>
+		<DBHost></DBHost>
+		<DBUser></DBUser>
+		<DBPass></DBPass>
 		<DB></DB>
 	</Database>
 </ServerOptions>

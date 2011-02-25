@@ -33,6 +33,7 @@ namespace Skylabs.oserver
             try
             {
                 Server = new Listener(host, port);
+                Server.Start();
             }
             catch (Exception e)
             {
@@ -45,6 +46,7 @@ namespace Skylabs.oserver
                 Thread.Sleep(1000);
             }
             new ConsoleEvent("Quitting...").writeEvent(true);
+            Server.Stop();
             UnregisterHandlers();
             ConsoleReader.Stop();
 		}
@@ -90,6 +92,19 @@ namespace Skylabs.oserver
             ConsoleEventLog.SerializeEvents("d:\\elog.xml");
         }
 
+        public static String getProperty(String ID)
+        {
+            String ret = "";
+            try
+            {
+                ret = Properties.GetElementsByTagName(ID).Item(0).InnerText;
+            }
+            catch (Exception e)
+            {
+                ret = "";
+            }
+            return ret;
+        }
         public static Boolean LoadProperties()
 		{
 			Properties = new XmlDocument();

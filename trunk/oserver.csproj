@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{49B4C975-A6D4-4054-980C-ED784C7E0399}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Skylabs.oserver</RootNamespace>
+    <RootNamespace>Skylabs</RootNamespace>
     <AssemblyName>oserver</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <StartupObject>Skylabs.oserver.MainClass</StartupObject>
@@ -31,21 +31,29 @@
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="mysql.data">
+      <HintPath>D:\mysql-connector-net-6.2.4-noinstall\mysql.data.dll</HintPath>
+    </Reference>
     <Reference Include="System">
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml">
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client.cs" />
     <Compile Include="ConsoleHelper\ConsoleEvent.cs" />
     <Compile Include="ConsoleHelper\ConsoleEventError.cs" />
     <Compile Include="ConsoleHelper\ConsoleEventLog.cs" />
     <Compile Include="ConsoleHelper\ConsoleMessage.cs" />
     <Compile Include="ConsoleHelper\ConsoleReader.cs" />
     <Compile Include="ConsoleHelper\ConsoleWriter.cs" />
+    <Compile Include="Containers\ClientContainer.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="UserMysql.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -65,4 +73,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
 </Project>
