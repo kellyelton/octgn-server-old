@@ -27,7 +27,7 @@ public class UserMysql {
 
 		MySqlConnection connection = new MySqlConnection(conString.ToString());
 		MySqlCommand command = connection.CreateCommand();
-		MySqlDataReader Reader;
+		MySqlDataReader Reader = null;
 
 		command.CommandText = "SELECT * FROM users WHERE email='" + username + "' AND pass='" + password + "';";
         try
@@ -45,21 +45,25 @@ public class UserMysql {
                                 case "uid":
                                     c.User.UID = Reader.GetInt32(i);
                                 break;
-                                case "email":
-                                    c.User.Email = Reader.GetString(i);
+                                case "username":
+                                    c.User.Username = Reader.GetString(i);
                                 break;
                             }
                         }
-                        c.User.Username = username;
+                        c.User.Email = username;
+                        Reader.Close();
                     connection.Close();
                     return true;
                 }
             }
+            Reader.Close();
             connection.Close();
         }
         catch (Exception e)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
+            Reader.Close();
+            connection.Close();
         }
         return false;
         //Failure
@@ -81,7 +85,7 @@ public class UserMysql {
         conString.Append(";");
         MySqlConnection connection = new MySqlConnection(conString.ToString());
         MySqlCommand command = connection.CreateCommand();
-        MySqlDataReader Reader;
+        MySqlDataReader Reader = null;
 
         #region VerifyInput
         nick = nick.Trim();
@@ -122,7 +126,7 @@ public class UserMysql {
         }
 
         //See if e-mail address is already registered
-        command.CommandText = "select `*` from `users` WHERE `email`='" + email1 + "';";
+        command.CommandText = "select * from users WHERE email='" + email1 + "';";
         try
         {
             Reader = command.ExecuteReader();
@@ -130,21 +134,22 @@ public class UserMysql {
             {
                 if (!Reader.IsDBNull(0))
                 {
+                    Reader.Close();
                     connection.Close();
                     return "REGERR4";
                 }
             }
-            connection.Close();
         }
         catch (Exception e)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
+            Reader.Close();
             connection.Close();
             return "REGERR0";
         }
-
+        Reader.Close();
         //Sees if username is already regestered
-        command.CommandText = "select `*` from `users` WHERE `username`='" + nick + "';";
+        command.CommandText = "select * from users WHERE username='" + nick + "';";
         try
         {
             Reader = command.ExecuteReader();
@@ -152,29 +157,30 @@ public class UserMysql {
             {
                 if (!Reader.IsDBNull(0))
                 {
+                    Reader.Close();
                     connection.Close();
                     return "REGERR3";
                 }
             }
-            connection.Close();
         }
         catch (Exception e)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
+            Reader.Close();
             connection.Close();
             return "REGERR0";
         }
+        Reader.Close();
 
         //Hash password
-        byte[] data = System.Text.Encoding.ASCII.GetBytes(pass1);
-        byte[] result; 
-
-        SHA1 sha = new SHA1CryptoServiceProvider(); 
-        result = sha.ComputeHash(data);
-        pass1 = Encoding.ASCII.GetString(result);
+        Encoding enc = Encoding.ASCII;
+        byte[] data = enc.GetBytes(pass1);
+        pass1 = BitConverter.ToString((new SHA1CryptoServiceProvider()).ComputeHash(data));
+        pass1 = pass1.Replace("-","");
+        pass1 = pass1.ToLower();
 
         command.CommandText = 
-                "INSERT INTO `users` (email,pass,username)"
+                "INSERT INTO users (email,pass,username)"
                 + " VALUES"
                 + "('"
                 + email1

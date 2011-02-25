@@ -15,6 +15,7 @@ namespace Skylabs.oserver
         public Boolean LoggedIn { get; set; }
 
         private User _User = new User();
+        private Boolean isRc = false;
 
         override public void handleError(Exception e,String error)
         {
@@ -59,6 +60,17 @@ namespace Skylabs.oserver
                 	    writeMessage(sm);
                         LoggedIn = false;
                     }
+                break;
+                case "REG":
+                    String nick = input.Arguments[0];
+                    String email = input.Arguments[1];
+                    String pass = input.Arguments[2];
+                    String regret = UserMysql.register(nick,email,pass);
+                    writeMessage(new SocketMessage(regret));
+                break;
+                case "RC":
+                    this.isRc = true;
+                    User = new User(987654321,"rc","rc");
                 break;
             }
         }
