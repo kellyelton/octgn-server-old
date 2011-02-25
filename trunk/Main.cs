@@ -4,6 +4,8 @@ using System.Xml;
 using System.IO;
 using System.Threading;
 using Skylabs.Networking;
+using Skylabs.oserver.Containers;
+using Skylabs.NetShit;
 
 namespace Skylabs.oserver
 {
@@ -12,6 +14,7 @@ namespace Skylabs.oserver
         public static XmlDocument Properties { get; set; }
         public static Listener Server { get; set; }
         private static bool endIt = false;
+        private static int fKillTime = -1;
 
 		public static void Main (string[] args)
 		{
@@ -43,13 +46,37 @@ namespace Skylabs.oserver
 
             while (endIt == false)
             {
+                if (fKillTime == 0)
+                    break;
+                if (fKillTime > 0)
+                    fKillTime -= 1;
+                    
                 Thread.Sleep(1000);
             }
+
             new ConsoleEvent("Quitting...").writeEvent(true);
+            ClientContainer.AllUserCommand(new NetShit.EndMessage());
             Server.Stop();
             UnregisterHandlers();
             ConsoleReader.Stop();
 		}
+
+        public static void KillServer()
+        {
+            ConsoleEventLog.addEvent(new ConsoleEvent("Killing server..."), true);
+            endIt = true;
+        }
+        public static void TimeKillServer(int time,String message)
+        {
+            fKillTime = time;
+            SocketMessage sm = new SocketMessage("CHATINFO");
+            String mess = "Server shutting down in " + fKillTime.ToString() + " seconds. ";
+            if (message != null && !String.IsNullOrEmpty(message))
+                mess += "\n Reason: " + message;
+            sm.Arguments.Add(mess);
+            ClientContainer.AllUserCommand(sm);
+        }
+
         public static void Stop()
         {
             endIt = true;

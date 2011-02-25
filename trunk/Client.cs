@@ -162,75 +162,40 @@ namespace Skylabs.oserver
             }
             if (isRc)
             {
-                //TODO Add RC Input Handling.
-                /*
-                Main.writeEvent("#RC message: " + input.getMessage());
-                if(head.equals("1"))
+                ConsoleEventLog.addEvent(new ConsoleEvent("#RC: ", input.getMessage(), ConsoleColor.Blue), true);
+                switch (input.Header)
                 {
-                    socketMessage sm = new socketMessage("CHATINFO");
-                    sm.Arguments.add(args.get(0));
-                    Main.setAllUserCommand(sm);
-                }
-                else if(head.equals("2"))
-                {
-                    Main.killServer("RC Requested.");
-                }
-                else if(head.equals("3"))
-                {
-                    try
-                    {
-                        int time = Integer.parseInt(args.get(0));
-                        Main.timekillServer(time,null);
-                    }
-                    catch(Exception e)
-                    {
-        			
-                    }
-                }
-                else if(head.equals("4"))
-                {
-                    try
-                    {
-                        int time = Integer.parseInt(args.get(0));
-                        Main.timekillServer(time,args.get(1));
-                    }
-                    catch(Exception e)
-                    {
-        			
-                    }
-                }
-                else if(head.equals("5"))
-                {
-                    synchronized(Main.HostedGames)
-                    {
-                        for(int i=0;i<Main.HostedGames.size();i++)
+                    case "1":
+                        SocketMessage sm = new SocketMessage("CHATINFO");
+                        sm.Arguments.Add(input.Arguments[0]);
+                        ClientContainer.AllUserCommand(sm);
+                    break;
+                    case "2":
+                        MainClass.KillServer();
+                    break;
+                    case "3":
+                        try
                         {
-                            socketMessage stemp = new socketMessage("UNHOST");
-                            stemp.Arguments.add(Integer.toString(Main.HostedGames.get(i).getIntUGameNum()));
-                            Main.setAllUserCommand(stemp);
+                            int time = int.Parse(input.Arguments[0]);
+                            MainClass.TimeKillServer(time, null);
                         }
-                        Main.HostedGames.clear();
-                    }
-                }
-                else if(head.equals("6"))
-                {
-                    synchronized(Main.HostedGames)
-                    {
-                        for(int i=0;i<Main.HostedGames.size();i++)
+                        catch(Exception e)
                         {
-                            if(Main.HostedGames.get(i).intUGameNum == Integer.parseInt(args.get(0)))
-                            {
-                                socketMessage stemp = new socketMessage("UNHOST");
-                                stemp.Arguments.add(Integer.toString(Main.HostedGames.get(i).getIntUGameNum()));
-                                Main.setAllUserCommand(stemp);
-                                Main.HostedGames.removeByUID(Main.HostedGames.get(i).getiUID());
-                                break;
-                            }
+        			
                         }
-                        //Main.HostedGames.clear();
-                    }
+                    break;
+                    case "4":
+                        try
+                        {
+                            int time = int.Parse(input.Arguments[0]);
+                            MainClass.TimeKillServer(time, input.Arguments[1]);
+                        }
+                        catch(Exception e)
+                        {
+        			
+                        }
+                    break;
                 }
-                 */
             }
         }
         override public void handleConnect(String host, int port)
