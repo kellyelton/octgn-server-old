@@ -29,23 +29,28 @@ public class UserMysql {
 		MySqlCommand command = connection.CreateCommand();
 		MySqlDataReader Reader;
 
-        byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
-        byte[] result; 
-
-        SHA1 sha = new SHA1CryptoServiceProvider(); 
-        result = sha.ComputeHash(data);
-        password = Encoding.ASCII.GetString(result);
-
-		command.CommandText = "select `*` from `users` WHERE `email`='" + username + "' AND `pass`='" + password + "';";
+		command.CommandText = "SELECT * FROM users WHERE email='" + username + "' AND pass='" + password + "';";
         try
         {
             connection.Open();
             Reader = command.ExecuteReader();
-            if (Reader.Read() != false)
+            while(Reader.Read() != false)
             {
                 if (!Reader.IsDBNull(0))
                 {
-                    //Success
+                        for (int i = 0; i < Reader.FieldCount; i++)
+                        {
+                            switch (Reader.GetName(i))
+                            {
+                                case "uid":
+                                    c.User.UID = Reader.GetInt32(i);
+                                break;
+                                case "email":
+                                    c.User.Email = Reader.GetString(i);
+                                break;
+                            }
+                        }
+                        c.User.Username = username;
                     connection.Close();
                     return true;
                 }
