@@ -37,8 +37,7 @@ namespace Skylabs.oserver
                 			    {
                 				    if( ClientContainer.Clients[i].Connected )
                 				    {
-                                        //TODO implement system for handing user log ins and outs
-                					    //Main.userLoggedOut(Main.Clients.get(i), Main.Clients.get(i).user.strUserEmail);
+                                        ClientContainer.UserEvent(UserEventType.LogOut, ClientContainer.Clients[i]);
                 					    ClientContainer.Clients[i].Close("Another user logged in.", false);
                 				    }
                 			    }
@@ -47,8 +46,7 @@ namespace Skylabs.oserver
                 	    SocketMessage sm = new SocketMessage("LOGSUCCESS");
                 	    sm.Arguments.Add(this.User.Username);
                 	    writeMessage(sm);
-                        //TODO implement system for handling user log ins and outs
-                        //Main.userLoggedIn(this, this.user);
+                        ClientContainer.UserEvent(UserEventType.LogIn, this);
                         //TODO Impliment daily message again.
                         //sm = new SocketMessage("CHATINFO");
                         //sm.Arguments.Add(Main.strDailyMessage);

@@ -6,6 +6,10 @@ using Skylabs.NetShit;
 
 namespace Skylabs.oserver.Containers
 {
+    public enum UserEventType
+    {
+        LogIn, LogOut
+    };
     public class ClientContainer
     {
         public static List<Client> Clients 
@@ -37,6 +41,23 @@ namespace Skylabs.oserver.Containers
                 {
                     Clients[i].writeMessage(command);
                 }
+            }
+        }
+        public static void UserEvent(UserEventType ue, Client c)
+        {
+            SocketMessage sm;
+            switch (ue)
+            {
+                case Containers.UserEventType.LogIn:
+                    sm = new SocketMessage("USERONLINE");
+                    sm.Arguments.Add(c.User.Email + ":" + c.User.Username);
+                    AllUserCommand(sm);
+                break;
+                case Containers.UserEventType.LogOut:
+                    sm = new SocketMessage("USEROFFLINE");
+                    sm.Arguments.Add(c.User.Email);
+                    AllUserCommand(sm);
+                break;
             }
         }
     }
