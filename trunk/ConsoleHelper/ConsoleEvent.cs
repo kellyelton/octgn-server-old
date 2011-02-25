@@ -10,8 +10,8 @@ namespace Skylabs.ConsoleHelper
     [Serializable]
     public class ConsoleEvent
     {
-        [XmlIgnore()]
-        public ConsoleColor Color { get; set; }
+        //[XmlIgnore()]
+        //public ConsoleColor Color { get; set; }
         [XmlIgnore()]
         public string Header { get; set; }
         [XmlElement("message")]
@@ -26,13 +26,13 @@ namespace Skylabs.ConsoleHelper
         {
             Message = message;
             Date = DateTime.Now;
-            Color = ConsoleWriter.OutputColor;
+            //Color = ConsoleWriter.OutputColor;
         }
-        public ConsoleEvent(String header, String message, ConsoleColor color)
+        public ConsoleEvent(String header, String message)
         {
             Header = header;
             Message = message;
-            Color = color;
+            //Color = color;
             Date = DateTime.Now;
         }
         public String getConsoleString()
@@ -41,7 +41,7 @@ namespace Skylabs.ConsoleHelper
         }
         public void writeEvent(Boolean addToEventLog)
         {
-            Console.ForegroundColor = Color;
+            //Console.ForegroundColor = Color;
             ConsoleWriter.writeLine(Header + Message, false);
             ConsoleWriter.writeCT();
             if(addToEventLog)

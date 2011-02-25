@@ -9,8 +9,9 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>Skylabs</RootNamespace>
     <AssemblyName>oserver</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <StartupObject>Skylabs.oserver.MainClass</StartupObject>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,13 +32,14 @@
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mysql.data">
-      <HintPath>D:\mysql-connector-net-6.2.4-noinstall\mysql.data.dll</HintPath>
-    </Reference>
     <Reference Include="System">
     </Reference>
-    <Reference Include="System.Data" />
+    <Reference Include="System.Data">
+    </Reference>
     <Reference Include="System.Xml">
+    </Reference>
+    <Reference Include="MySql.Data, Version=6.2.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d">
+      <HintPath>D:\mysql-connector-net-6.2.4-noinstall\mysql.data.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -63,8 +65,13 @@
       <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
       <Name>NetShit</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\octgnsvn\octgnFX\Octgn.Server\Octgn.Server.csproj">
+      <Project>{6DD203AF-5003-4AF3-A982-67F10B704D4A}</Project>
+      <Name>Octgn.Server</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="ServerOptions-Template.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

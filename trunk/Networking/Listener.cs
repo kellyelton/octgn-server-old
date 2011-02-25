@@ -13,7 +13,7 @@ namespace Skylabs.Networking
 {
     public class Listener
     {
-        private TcpListener Sock;
+        public TcpListener Sock;
         private Thread thread;
         private Boolean endIt = false;
 
@@ -22,7 +22,7 @@ namespace Skylabs.Networking
             IPAddress ip = null;
             host = host.Trim();
             if(host.Equals("*") || host.Equals(""))
-                ip = IPAddress.Loopback;
+                ip = IPAddress.Any;
             else
             {
                 IPAddress.Parse(host);

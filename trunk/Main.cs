@@ -18,12 +18,12 @@ namespace Skylabs.oserver
 
 		public static void Main (string[] args)
 		{
-            Console.ForegroundColor = ConsoleColor.White;
+            //Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
             ConsoleWriter.CommandText = "O-Lobby: ";
-            ConsoleWriter.CommandTextColor = ConsoleColor.White;
-            ConsoleWriter.OutputColor = ConsoleColor.Gray;
-            ConsoleReader.InputColor = ConsoleColor.Yellow;
+            //ConsoleWriter.CommandTextColor = ConsoleColor.White;
+            //ConsoleWriter.OutputColor = ConsoleColor.Gray;
+            //ConsoleReader.InputColor = ConsoleColor.Yellow;
             ConsoleReader.Start();
             if (!LoadProperties())
                 return;
@@ -40,8 +40,9 @@ namespace Skylabs.oserver
             }
             catch (Exception e)
             {
-                ConsoleEventLog.addEvent(new ConsoleEventError("Problem with settings 'BindInt' or 'BindPort'.", e), true);
+                ConsoleEventLog.addEvent(new ConsoleEventError("Problem with settings 'BindInt' or 'BindPort'." + host + ":" + sport, e), true);
                 Stop();
+                return;
             }
 
             while (endIt == false)
@@ -98,15 +99,14 @@ namespace Skylabs.oserver
                 case "quit":
                     Stop();
                     break;
-                case "bake":
-                    String ret = "Baking args brah...\n";
-                    foreach (ConsoleArgument arg in input.Args)
-                    {
-                        ret += arg.Argument;
-                        if (!String.IsNullOrEmpty(arg.Value))
-                            ret += " = " + arg.Value;
-                        ret += "\n";
-                    }
+                case "server":
+                    String ret = "Host: " + getProperty("BindInt") + ":" + getProperty("BindPort") + "\n";
+                    new ConsoleEvent(ret).writeEvent(true);
+                    break;
+                case "hosting":
+                    ret = "IsBound: " + Server.Sock.Server.IsBound.ToString();
+                    ret += "\n";
+                    ret += Server.Sock.Server.LocalEndPoint.ToString();
                     new ConsoleEvent(ret).writeEvent(true);
                     break;
                 default:
@@ -116,7 +116,7 @@ namespace Skylabs.oserver
         }
         private static void eLog_eAddEvent(ConsoleEvent e)
         {
-            ConsoleEventLog.SerializeEvents("d:\\elog.xml");
+            ConsoleEventLog.SerializeEvents("elog.xml");
         }
 
         public static String getProperty(String ID)
@@ -154,7 +154,7 @@ namespace Skylabs.oserver
             {
                 f = File.Open("ServerOptions.xml", FileMode.Open);
                 Properties.Load(f);
-                new ConsoleEvent("#Event: ", "Settings file loaded.", ConsoleColor.Gray).writeEvent(true);
+                new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
             }
             catch (Exception ex)
             {

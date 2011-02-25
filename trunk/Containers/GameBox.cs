@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Skylabs.ConsoleHelper;
 
 namespace Skylabs.Containers
 {
@@ -32,6 +33,10 @@ namespace Skylabs.Containers
             Games.Add(game);
             int i = Games.IndexOf(game);
             Games[i].ID = i;
+            Version V = new Version(Games[i].GameVersion);
+            Guid G = new Guid(Games[i].GUID);
+            ConsoleWriter.writeLine("#Done making version and GUID", true);
+            Games[i].Server = new Octgn.Server.Server(6000 + i, false, G, V);
             return i;
         }
         public static int RemoveByUID(int UID)
@@ -42,6 +47,7 @@ namespace Skylabs.Containers
                 if (Games[i].UID == UID && Games[i].Available)
                 {
                     ret = Games[i].ID;
+                    Games[i].Server.Stop();
                     Games.RemoveAt(i);
                     return ret;
                 }

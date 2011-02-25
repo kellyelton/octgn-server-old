@@ -28,6 +28,7 @@ namespace Skylabs.ConsoleHelper
         }
         public static void SerializeEvents(string filename)
         {
+            /*
             using (Stream stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 XmlSerializer xs;
@@ -53,6 +54,7 @@ namespace Skylabs.ConsoleHelper
                 xs.Serialize(xmlTextWriter, ConsoleEventLog.Events);
 
             }
+             * */
         }
     }
 }

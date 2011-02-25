@@ -96,15 +96,13 @@ namespace Skylabs.oserver
                             sm.Arguments.Add(sb.ToString());
                         }
                         writeMessage(sm);
-                        //Main.writeEvent("Sending user list: " + sb);
                         break;
                     case "LOBCHAT":
                         ClientContainer.LobbyChat(User.Username, input.Arguments[0].Trim());
                         break;
                     case "HOST":
                         String[] ips = input.Arguments[0].Split(new char[1] { '?' });
-                        HostedGame h = new HostedGame(User.UID, input.Arguments[5], input.Arguments[3], input.Arguments[2], input.Arguments[4], "");
-                        //h.setStrHost(this.sock.getRemoteSocketAddress().toString());
+                        HostedGame h = new HostedGame(User.UID, input.Arguments[3], input.Arguments[1], input.Arguments[0], input.Arguments[2], "");
                         int gID = GameBox.AddGame(h);
                         SocketMessage stemp = input;
                         stemp.Arguments.Add(this.User.Username);
@@ -131,7 +129,11 @@ namespace Skylabs.oserver
                             //GID
                             stemp3.Arguments.Add(GameBox.Games[i].ID.ToString());
                             //IP
-                            stemp3.Arguments.Add(MainClass.getProperty("BindInt"));
+#if(DEBUG)
+                            stemp3.Arguments.Add("localhost");
+#else
+                            stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
+#endif
                             //Port
                             int port = (GameBox.Games[i].ID + 6000);
                             stemp3.Arguments.Add(port.ToString());
@@ -162,7 +164,7 @@ namespace Skylabs.oserver
             }
             if (isRc)
             {
-                ConsoleEventLog.addEvent(new ConsoleEvent("#RC: ", input.getMessage(), ConsoleColor.Blue), true);
+                ConsoleEventLog.addEvent(new ConsoleEvent("#RC: ", input.getMessage()), true);
                 switch (input.Header)
                 {
                     case "1":

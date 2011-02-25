@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Text;
+using Octgn.Server;
 
 namespace Skylabs
 {
@@ -15,6 +16,7 @@ namespace Skylabs
         public String GameVersion { get; set; }
         public String Password { get; set; }
         public Boolean Available { get; set; }
+        public Server Server {get;set;}
         public HostedGame(int uid, String name, String guid, String gamename, String gameversion, String password)
         {
             UID = uid;

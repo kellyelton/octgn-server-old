@@ -61,7 +61,7 @@ public class UserMysql {
         }
         catch (Exception e)
         {
-            ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
+            ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error1." + e.Message, e), true);
             Reader.Close();
             connection.Close();
         }
@@ -120,7 +120,7 @@ public class UserMysql {
         }
         catch (Exception e)
         {
-            ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
+            ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error2.", e), true);
             connection.Close();
             return "REGERR0";
         }

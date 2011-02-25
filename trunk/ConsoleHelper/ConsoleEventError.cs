@@ -43,7 +43,7 @@ namespace Skylabs.ConsoleHelper
         public ConsoleEventError(String message, Exception e):base(message)
         {
             Header = "!Error: ";
-            Color = ConsoleColor.Red;
+            //Color = ConsoleColor.Red;
             exception = e;
         }
     }

@@ -14,9 +14,9 @@ namespace Skylabs.ConsoleHelper
         public delegate void ConsoleInputDelegate(ConsoleMessage input);
 
         public static event ConsoleInputDelegate eConsoleInput;
-        public static ConsoleColor InputColor { get { return _InputColor; } set { _InputColor = value; } }
+        //public static ConsoleColor InputColor { get { return _InputColor; } set { _InputColor = value; } }
 
-        private static ConsoleColor _InputColor = ConsoleColor.Gray;
+        //private static ConsoleColor _InputColor = ConsoleColor.Gray;
         
         private static Thread thread;
         private static Thread rlthread;
