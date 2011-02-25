@@ -30,8 +30,15 @@ namespace Skylabs.oserver.Containers
             }
         }
 
-        private static List<Client> _Clients = new List<Client>();
+        private static List<Client> _Clients = new List<Client>(1000);
+        private static int intCurrentClientID = 0;
 
+        public static void AddClient(Client c)
+        {
+            Clients.Add(c);
+            int i = Clients.IndexOf(c);
+            Clients[i].ID = i;
+        }
         public static void AllUserCommand(SocketMessage command)
         {
             int intcount = Clients.Count;

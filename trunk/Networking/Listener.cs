@@ -61,7 +61,7 @@ namespace Skylabs.Networking
                 try
                 {
                     c.GetAcceptedSocket(Sock.AcceptSocket());
-                    ClientContainer.Clients.Add(c);
+                    ClientContainer.AddClient(c);
                 }
                 catch (SocketException se)
                 {

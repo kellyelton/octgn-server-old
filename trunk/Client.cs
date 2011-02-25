@@ -13,6 +13,7 @@ namespace Skylabs.oserver
     {
         public User User { get { return _User;} set { _User = value;} }
         public Boolean LoggedIn { get; set; }
+        public int ID { get; set; }
 
         private User _User = new User();
         private Boolean isRc = false;
@@ -32,9 +33,9 @@ namespace Skylabs.oserver
                     {
                 	    for(int i=0;i<ClientContainer.Clients.Count;i++)
                 	    {
-                            if (ClientContainer.Clients[i].User.Username.Equals(User.Username))
+                            if (ClientContainer.Clients[i].User.UID == User.UID)
                 		    {
-                			    if(ClientContainer.Clients[i].User.UID != User.UID)
+                			    if(ClientContainer.Clients[i].ID != this.ID)
                 			    {
                 				    if( ClientContainer.Clients[i].Connected )
                 				    {
