@@ -39,20 +39,36 @@ namespace Skylabs.Containers
             Games[i].Server = new Octgn.Server.Server(6000 + i, false, G, V);
             return i;
         }
-        public static int RemoveByUID(int UID)
+        public static String RemoveByUID(int UID)
         {
             int ret = -1;
+            String sret = "";
             for (int i = 0; i < Games.Count; i++)
             {
                 if (Games[i].UID == UID && Games[i].Available)
                 {
                     ret = Games[i].ID;
-                    Games[i].Server.Stop();
-                    Games.RemoveAt(i);
-                    return ret;
+                    //Games[i].Server.Stop();
+                    Games[i].Available = false;
+                    //Games.RemoveAt(i);
+                    sret += ret.ToString() + ":";
+                }
+                else
+                {
+                    int deadCount = 0;
+                    foreach(Octgn.Server.Server.Connection c in Games[i].Server.clients)
+                    {
+                        if(c.disposed)
+                            deadCount++;
+                    }
+                    if (deadCount == Games[i].Server.clients.Count)
+                    {
+                        Games[i].Server.Stop();
+                        Games.RemoveAt(i);
+                    }
                 }
             }
-            return ret;
+            return sret;
         }
     }
 }

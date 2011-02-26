@@ -15,6 +15,11 @@ namespace Skylabs.oserver
         public static Listener Server { get; set; }
         private static bool endIt = false;
         private static int fKillTime = -1;
+#if(DEBUG)
+        public static String RootPath = "";
+#else
+        public static String RootPath = "/home/ftpaccount/";
+#endif
 
 		public static void Main (string[] args)
 		{
@@ -137,7 +142,7 @@ namespace Skylabs.oserver
             String s = "";
             try
             {
-                s = System.IO.File.ReadAllText(getProperty("DailyMessage"));
+                s = System.IO.File.ReadAllText(RootPath + getProperty("DailyMessage"));
             }
             catch (Exception e)
             {
@@ -152,7 +157,7 @@ namespace Skylabs.oserver
             FileStream f = null;
             try
             {
-                f = File.Open("ServerOptions.xml", FileMode.Open);
+                f = File.Open(RootPath + "ServerOptions.xml", FileMode.Open);
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
             }

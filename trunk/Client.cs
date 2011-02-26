@@ -107,15 +107,22 @@ namespace Skylabs.oserver
                         SocketMessage stemp = input;
                         stemp.Arguments.Add(this.User.Username);
                         stemp.Arguments.Add(gID.ToString());
+                        stemp.Arguments.Add(MainClass.getProperty("OusideHost"));
+                        int port = (gID + 6000);
+                        stemp.Arguments.Add(port.ToString());
                         ClientContainer.AllUserCommand(stemp);
                         break;
                     case "UNHOST":
-                        int ret = GameBox.RemoveByUID(User.UID);
-                        if (ret != -1)
+                        string ret = GameBox.RemoveByUID(User.UID);
+                        String[] rets = ret.Split(new char[1] { ':' },StringSplitOptions.RemoveEmptyEntries);
+                        foreach (String b in rets)
                         {
-                            SocketMessage stemp2 = input;
-                            stemp2.Arguments.Add(ret.ToString());
-                            ClientContainer.AllUserCommand(stemp2);
+                            if (!ret.Equals("-1"))
+                            {
+                                SocketMessage stemp2 = input;
+                                stemp2.Arguments.Add(b);
+                                ClientContainer.AllUserCommand(stemp2);
+                            }
                         }
                         break;
                     case "GAMELIST":
@@ -135,7 +142,7 @@ namespace Skylabs.oserver
                             stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
 #endif
                             //Port
-                            int port = (GameBox.Games[i].ID + 6000);
+                            port = (GameBox.Games[i].ID + 6000);
                             stemp3.Arguments.Add(port.ToString());
                             //GameName
                             stemp3.Arguments.Add(GameBox.Games[i].GameName);
