@@ -56,12 +56,12 @@ namespace Skylabs.Containers
                 else
                 {
                     int deadCount = 0;
-                    foreach(Octgn.Server.Server.Connection c in Games[i].Server.clients)
+                    foreach(Octgn.Server.Server.Connection c in Games[i].Server.Clients)
                     {
-                        if(c.disposed)
+                        if(c.Disposed)
                             deadCount++;
                     }
-                    if (deadCount == Games[i].Server.clients.Count)
+                    if (deadCount == Games[i].Server.Clients.Count)
                     {
                         Games[i].Server.Stop();
                         Games.RemoveAt(i);

@@ -167,7 +167,7 @@ namespace Skylabs.oserver.Containers
             List<User> ret = new List<User>();
             for (int i = 0; i < Clients.Count; i++)
             {
-                if (Clients[i].LoggedIn)
+                if (Clients[i].LoggedIn && Clients[i].Connected)
                     ret.Add(Clients[i].User);
             }
             return ret;

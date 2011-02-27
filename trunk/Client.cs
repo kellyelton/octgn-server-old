@@ -15,6 +15,7 @@ namespace Skylabs.oserver
         public User User { get { return _User;} set { _User = value;} }
         public Boolean LoggedIn { get; set; }
         public int ID { get; set; }
+        public Boolean NotifiedLoggedOff { get; set; }
 
         private User _User = new User();
         private Boolean isRc = false;
@@ -129,36 +130,39 @@ namespace Skylabs.oserver
                         int mGames = GameBox.Games.Count;
                         for (int i = 0; i < mGames; i++)
                         {
-                            SocketMessage stemp3 = new SocketMessage("GAMELIST");
+                            if (GameBox.Games[i].Available)
+                            {
+                                SocketMessage stemp3 = new SocketMessage("GAMELIST");
 
-                            //Game list
-                            //GID,IP,Port,GameName,GUID,GameVersion,Username,Name
-                            //GID
-                            stemp3.Arguments.Add(GameBox.Games[i].ID.ToString());
-                            //IP
+                                //Game list
+                                //GID,IP,Port,GameName,GUID,GameVersion,Username,Name
+                                //GID
+                                stemp3.Arguments.Add(GameBox.Games[i].ID.ToString());
+                                //IP
 #if(DEBUG)
                             stemp3.Arguments.Add("localhost");
 #else
-                            stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
+                                stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
 #endif
-                            //Port
-                            port = (GameBox.Games[i].ID + 6000);
-                            stemp3.Arguments.Add(port.ToString());
-                            //GameName
-                            stemp3.Arguments.Add(GameBox.Games[i].GameName);
-                            //GUID
-                            stemp3.Arguments.Add(GameBox.Games[i].GUID);
-                            //GameVersion
-                            stemp3.Arguments.Add(GameBox.Games[i].GameVersion);
+                                //Port
+                                port = (GameBox.Games[i].ID + 6000);
+                                stemp3.Arguments.Add(port.ToString());
+                                //GameName
+                                stemp3.Arguments.Add(GameBox.Games[i].GameName);
+                                //GUID
+                                stemp3.Arguments.Add(GameBox.Games[i].GUID);
+                                //GameVersion
+                                stemp3.Arguments.Add(GameBox.Games[i].GameVersion);
 
-                            int uid = GameBox.Games[i].UID;
-                            Client cl = ClientContainer.getClientFromUID(uid);
-                            //Username
-                            stemp3.Arguments.Add(cl.User.Username);
-                            //Name
-                            stemp3.Arguments.Add(GameBox.Games[i].Name);
-                            //Main.writeEvent("Sending GAMELIST: " + stemp3.getMessage());
-                            this.writeMessage(stemp3);
+                                int uid = GameBox.Games[i].UID;
+                                Client cl = ClientContainer.getClientFromUID(uid);
+                                //Username
+                                stemp3.Arguments.Add(cl.User.Username);
+                                //Name
+                                stemp3.Arguments.Add(GameBox.Games[i].Name);
+                                //Main.writeEvent("Sending GAMELIST: " + stemp3.getMessage());
+                                this.writeMessage(stemp3);
+                            }
 
                         }
                         break;
@@ -214,6 +218,11 @@ namespace Skylabs.oserver
 
         override public void handleDisconnect(String reason, String host, int port)
         {
+            if(!NotifiedLoggedOff)
+            {
+                ClientContainer.UserEvent(UserEventType.LogOut, this);
+                this.NotifiedLoggedOff = true;
+            }
             ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " disconnected because " + reason), true);
         }
     }
