@@ -63,6 +63,10 @@ namespace Skylabs.Networking
                     c.GetAcceptedSocket(Sock.AcceptTcpClient());
                     ClientContainer.AddClient(c);
                 }
+                catch (InvalidOperationException ioe)
+                {
+                    
+                }
                 catch (SocketException se)
                 {
                     if (se.SocketErrorCode == SocketError.WouldBlock)

@@ -28,11 +28,11 @@ namespace Skylabs.ConsoleHelper
         }
         public static void SerializeEvents(string filename)
         {
-            /*
-            using (Stream stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite))
+
+            using (Stream stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite,FileShare.Write))
             {
                 XmlSerializer xs;
-                XmlTextWriter xmlTextWriter = new XmlTextWriter(stream, Encoding.ASCII);
+            XmlTextWriter xmlTextWriter = new XmlTextWriter(stream, Encoding.ASCII);
                 xmlTextWriter.Formatting = Formatting.Indented;
                 xmlTextWriter.Indentation = 4;
                 List<Type> cTypes = new List<Type>();
@@ -54,7 +54,7 @@ namespace Skylabs.ConsoleHelper
                 xs.Serialize(xmlTextWriter, ConsoleEventLog.Events);
 
             }
-             * */
+
         }
     }
 }
