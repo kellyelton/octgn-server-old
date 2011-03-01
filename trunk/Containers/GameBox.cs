@@ -31,7 +31,7 @@ namespace Skylabs.Containers
         public static int AddGame(HostedGame game)
         {
             Games.Add(game);
-            int i = Games.IndexOf(game);
+            int i = Games.LastIndexOf(game);
             Games[i].ID = i;
             Version V = new Version(Games[i].GameVersion);
             Guid G = new Guid(Games[i].GUID);
@@ -58,6 +58,7 @@ namespace Skylabs.Containers
                     int deadCount = 0;
                     foreach(Octgn.Server.Server.Connection c in Games[i].Server.Clients)
                     {
+                        
                         if(c.Disposed)
                             deadCount++;
                     }

@@ -121,7 +121,7 @@ namespace Skylabs.oserver
         }
         private static void eLog_eAddEvent(ConsoleEvent e)
         {
-            ConsoleEventLog.SerializeEvents("elog.xml");
+            ConsoleEventLog.SerializeEvents(RootPath + "elog.xml");
         }
 
         public static String getProperty(String ID)
