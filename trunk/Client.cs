@@ -130,14 +130,15 @@ namespace Skylabs.oserver
                         int mGames = GameBox.Games.Count;
                         for (int i = 0; i < mGames; i++)
                         {
-                            if (GameBox.Games[i].Available)
+                            HostedGame hg = (HostedGame)GameBox.Games[i];
+                            if (hg.Available)
                             {
                                 SocketMessage stemp3 = new SocketMessage("GAMELIST");
 
                                 //Game list
                                 //GID,IP,Port,GameName,GUID,GameVersion,Username,Name
                                 //GID
-                                stemp3.Arguments.Add(GameBox.Games[i].ID.ToString());
+                                stemp3.Arguments.Add(hg.ID.ToString());
                                 //IP
 #if(DEBUG)
                             stemp3.Arguments.Add("localhost");
@@ -145,21 +146,21 @@ namespace Skylabs.oserver
                                 stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
 #endif
                                 //Port
-                                port = (GameBox.Games[i].ID + 6000);
+                                port = (hg.ID + 6000);
                                 stemp3.Arguments.Add(port.ToString());
                                 //GameName
-                                stemp3.Arguments.Add(GameBox.Games[i].GameName);
+                                stemp3.Arguments.Add(hg.GameName);
                                 //GUID
-                                stemp3.Arguments.Add(GameBox.Games[i].GUID);
+                                stemp3.Arguments.Add(hg.GUID);
                                 //GameVersion
-                                stemp3.Arguments.Add(GameBox.Games[i].GameVersion);
+                                stemp3.Arguments.Add(hg.GameVersion);
 
-                                int uid = GameBox.Games[i].UID;
+                                int uid = hg.UID;
                                 Client cl = ClientContainer.getClientFromUID(uid);
                                 //Username
                                 stemp3.Arguments.Add(cl.User.Username);
                                 //Name
-                                stemp3.Arguments.Add(GameBox.Games[i].Name);
+                                stemp3.Arguments.Add(hg.Name);
                                 //Main.writeEvent("Sending GAMELIST: " + stemp3.getMessage());
                                 this.writeMessage(stemp3);
                             }

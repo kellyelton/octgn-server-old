@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Skylabs.ConsoleHelper;
+using System.Collections;
 
 namespace Skylabs.Containers
 {
     public class GameBox
     {
-        public static List<HostedGame> Games
+        public static ArrayList Games
         {
             get
             {
@@ -26,17 +27,30 @@ namespace Skylabs.Containers
             }
         }
 
-        private static List<HostedGame> _Games = new List<HostedGame>();
+        private static ArrayList _Games = new ArrayList();
+
+        public HostedGame this[int index] 
+        {
+            get
+            {
+                return (HostedGame)Games[index];
+            }
+            set
+            {
+                Games[index] = value;
+            }
+        }
 
         public static int AddGame(HostedGame game)
         {
-            Games.Add(game);
-            int i = Games.LastIndexOf(game);
-            Games[i].ID = i;
-            Version V = new Version(Games[i].GameVersion);
-            Guid G = new Guid(Games[i].GUID);
-            ConsoleWriter.writeLine("#Done making version and GUID", true);
-            Games[i].Server = new Octgn.Server.Server(6000 + i, false, G, V);
+            int i = Games.Add(game);
+            HostedGame h = (HostedGame)Games[i];
+            h.ID = i;
+            Version V = new Version(h.GameVersion);
+            Guid G = new Guid(h.GUID);
+            int port = 6000 + i;
+            ConsoleEventLog.addEvent(new ConsoleEvent("#Starting server on port " + port.ToString()), true);
+            h.Server = new Octgn.Server.Server(port, false, G, V);
             return i;
         }
         public static String RemoveByUID(int UID)
@@ -45,27 +59,28 @@ namespace Skylabs.Containers
             String sret = "";
             for (int i = 0; i < Games.Count; i++)
             {
-                if (Games[i].UID == UID && Games[i].Available)
+                HostedGame g = (HostedGame)Games[i];
+                if (g.UID == UID && g.Available)
                 {
-                    ret = Games[i].ID;
+                    ret = g.ID;
                     //Games[i].Server.Stop();
-                    Games[i].Available = false;
+                    g.Available = false;
                     //Games.RemoveAt(i);
                     sret += ret.ToString() + ":";
                 }
                 else
                 {
                     int deadCount = 0;
-                    foreach(Octgn.Server.Server.Connection c in Games[i].Server.Clients)
+                    foreach(Octgn.Server.Server.Connection c in g.Server.Clients)
                     {
                         
                         if(c.Disposed)
                             deadCount++;
                     }
-                    if (deadCount == Games[i].Server.Clients.Count)
+                    if (deadCount == g.Server.Clients.Count)
                     {
-                        Games[i].Server.Stop();
-                        Games.RemoveAt(i);
+                        g.Server.Stop();
+                        //Games.RemoveAt(i);
                     }
                 }
             }

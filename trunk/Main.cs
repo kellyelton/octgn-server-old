@@ -63,6 +63,7 @@ namespace Skylabs.oserver
             new ConsoleEvent("Quitting...").writeEvent(true);
             ClientContainer.AllUserCommand(new NetShit.EndMessage());
             Server.Stop();
+
             UnregisterHandlers();
             ConsoleReader.Stop();
 		}
