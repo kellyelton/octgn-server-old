@@ -6,6 +6,7 @@ using System.Threading;
 using Skylabs.Networking;
 using Skylabs.oserver.Containers;
 using Skylabs.NetShit;
+using Skylabs.Containers;
 
 namespace Skylabs.oserver
 {
@@ -18,7 +19,7 @@ namespace Skylabs.oserver
 #if(DEBUG)
         public static String RootPath = "";
 #else
-        public static String RootPath = "/home/ftpaccount/";
+        public static String RootPath = "/var/oserver/";
 #endif
 
 		public static void Main (string[] args)
@@ -61,7 +62,15 @@ namespace Skylabs.oserver
             }
 
             new ConsoleEvent("Quitting...").writeEvent(true);
-            ClientContainer.AllUserCommand(new NetShit.EndMessage());
+            //ClientContainer.AllUserCommand(new NetShit.EndMessage());
+            foreach(Client c in ClientContainer.Clients)
+            {
+                c.Close("Server shutdown.", true);
+            }
+            foreach (HostedGame h in GameBox.Games)
+            {
+                h.Server.Stop();
+            }
             Server.Stop();
 
             UnregisterHandlers();

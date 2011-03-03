@@ -72,6 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="emailalert.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="oserver.sh">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="ServerOptions-Template.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

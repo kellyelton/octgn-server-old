@@ -108,7 +108,11 @@ namespace Skylabs.oserver
                         SocketMessage stemp = input;
                         stemp.Arguments.Add(this.User.Username);
                         stemp.Arguments.Add(gID.ToString());
+#if(DEBUG)
+                        stemp.Arguments.Add("localhost");
+#else
                         stemp.Arguments.Add(MainClass.getProperty("OusideHost"));
+#endif
                         int port = (gID + 6000);
                         stemp.Arguments.Add(port.ToString());
                         ClientContainer.AllUserCommand(stemp);
@@ -223,6 +227,17 @@ namespace Skylabs.oserver
             {
                 ClientContainer.UserEvent(UserEventType.LogOut, this);
                 this.NotifiedLoggedOff = true;
+                string ret = GameBox.RemoveByUID(User.UID);
+                String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (String b in rets)
+                {
+                    if (!ret.Equals("-1"))
+                    {
+                        SocketMessage stemp2 = new SocketMessage("UNHOST");
+                        stemp2.Arguments.Add(b);
+                        ClientContainer.AllUserCommand(stemp2);
+                    }
+                }
             }
             ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " disconnected because " + reason), true);
         }
