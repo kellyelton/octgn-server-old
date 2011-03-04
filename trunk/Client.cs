@@ -227,6 +227,7 @@ namespace Skylabs.oserver
             {
                 ClientContainer.UserEvent(UserEventType.LogOut, this);
                 this.NotifiedLoggedOff = true;
+                this.LoggedIn = false;
                 string ret = GameBox.RemoveByUID(User.UID);
                 String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (String b in rets)

@@ -91,7 +91,7 @@ namespace Skylabs.oserver.Containers
     		    else
     			    command =chat.Substring(1,sp-1);
     		    chat = chat.Substring(sp+1);
-    		    if(command.Equals("w"))
+    		    if(command.ToLower().Equals("w"))
     		    {
     			    String to;
     			    sp = chat.IndexOf(' ');
