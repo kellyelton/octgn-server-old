@@ -91,7 +91,7 @@ namespace Skylabs.oserver
                         for (int i = 0; i < intOnlineUsers; i++)
                         {
                             sb = new StringBuilder();
-                            sb.Append(listOnlineUsers[i]);
+                            sb.Append(listOnlineUsers[i].Email);
                             sb.Append(':');
                             sb.Append(listOnlineUsers[i].Username);
                             sm.Arguments.Add(sb.ToString());
