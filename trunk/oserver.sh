@@ -5,9 +5,15 @@
     cp /var/oserver/oserverlog.log /var/oserver/logfiles/$filename.log
     filename=$prefix.$suffix
     cp /var/oserver/elog.xml /var/oserver/logfiles/$filename.xml
-	chmod -R 777 /home/ftpaccount/serverupdate
-	sudo cp -r /home/ftpaccount/serverupdate/* /var/oserver/ ;
-	sudo rm -r /home/ftpaccount/serverupdate/* ;
-	chmod -R 777 /var/oserver
+	DIR="/home/ftpaccount/serverupdate"
+	if [ "$(ls -A $DIR)" ]; then
+		chmod -R 777 /home/ftpaccount/serverupdate
+		sudo cp -r /home/ftpaccount/serverupdate/* /var/oserver/ ;
+		sudo rm -r /home/ftpaccount/serverupdate/* ;
+		chmod -R 777 /var/oserver
+	fi
 
-exec ./emailalert.sh	
+chmod 777 emailalert.sh
+./var/oserver/emailalert.sh	
+exit 0
+
