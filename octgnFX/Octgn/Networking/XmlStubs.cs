@@ -952,7 +952,7 @@ namespace Octgn.Networking
 			}
 			catch 
 			{ 
-				if (Program.Server != null && Program.Server.Disconnected(to))
+				if (Program.IsHost)
 					return;
 				Program.Client.Disconnected();
 			}

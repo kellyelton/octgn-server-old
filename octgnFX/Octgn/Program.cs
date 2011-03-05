@@ -23,10 +23,37 @@ namespace Octgn
 
 		internal static Server.Server Server;
 		internal static Networking.Client Client;
+        //TODO Added for lobby
+        ////////////////////////////////////////
+        internal static Lobby.LobbyClient LClient;
+        internal static Lobby.LobbyWindow lwLobbyWindow;
+        public static Launcher.LauncherWindow lwMainWindow;
+        public static Play.PlayWindow lwPlay;
+        ////////////////////////////////////////
 		internal static event EventHandler<ServerErrorEventArgs> ServerError;
 
-    internal static bool IsHost { get { return Server != null; } }
-
+        //TODO Changed for lobby
+        // Old internal static bool IsHost { get { return Server != null; } }
+        internal static bool IsHost
+        {
+            get
+            {
+                if (Server == null)
+                {
+                    if (LClient != null)
+                    {
+                        if (LClient.isHosting)
+                            return true;
+                        else
+                            return false;
+                    }
+                    else
+                        return false;
+                }
+                else
+                    return true;
+            }
+        }
 		internal static Dispatcher Dispatcher;
 		
 		internal readonly static TraceSource Trace = new TraceSource("MainTrace", SourceLevels.Information);
@@ -88,6 +115,7 @@ namespace Octgn
     internal static void TraceWarning(string message, params object[] args)
     {
         Program.Trace.TraceEvent(TraceEventType.Warning, EventIds.NonGame, message, args);
+        
     }
 	}
 }

@@ -84,7 +84,10 @@
 										  CellEditEnding="ElementEditEnd">
 							        <DataGrid.Columns>
 										<DataGridTextColumn Binding="{Binding Card.Name, Mode=OneWay}" IsReadOnly="True" Width="*" />
-										<DataGridTextColumn Binding="{Binding Quantity}" Width="50" />
+                                        <!--Edited here & CardModel-->
+                                        <DataGridTextColumn Header="Color" IsReadOnly="True"  Binding="{Binding Card.Color}" Width="*"/>
+                                        <!--Edited here & CardModel-->
+                                        <DataGridTextColumn Binding="{Binding Quantity}" Width="50" />
 									</DataGrid.Columns>
 								</DataGrid>
 							</Expander>

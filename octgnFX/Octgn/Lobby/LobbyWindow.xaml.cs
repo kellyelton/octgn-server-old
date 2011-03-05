@@ -12,11 +12,10 @@ using System.Windows.Shapes;
 using System.Windows.Navigation;
 using System.Windows.Media.Animation;
 
-namespace Octgn.Launcher
+namespace Octgn.Lobby
 {
-	public partial class LauncherWindow : NavigationWindow
+	public partial class LobbyWindow : NavigationWindow
 	{
-        public Boolean OkToClose { get; set; }
 		private static readonly Duration TransitionDuration = new Duration(TimeSpan.FromMilliseconds(500));
 		private readonly AnimationTimeline OutAnimation = new DoubleAnimation(0, TransitionDuration);
 		private readonly AnimationTimeline InAnimation = new DoubleAnimation(0, 1, TransitionDuration);
@@ -25,10 +24,15 @@ namespace Octgn.Launcher
 		private bool isInTransition = false;
 		private object transitionTarget;
 
-		public LauncherWindow()
+        public LobbyWindow()
 		{
 			InitializeComponent();
-            OkToClose = false;
+            var navWnd = Application.Current.MainWindow as Octgn.Launcher.LauncherWindow;
+            if (navWnd != null)
+            {
+                navWnd.Closing += new System.ComponentModel.CancelEventHandler(navWnd_Closing);
+            }
+            okToCloseMainWindow = false;
 			NavigationCommands.BrowseBack.InputGestures.Clear();
 
 			OutAnimation.Completed += delegate
@@ -40,8 +44,6 @@ namespace Octgn.Launcher
 					Navigate(transitionTarget);
 			};
 			OutAnimation.Freeze();
-            //TODO Lobby added this
-
 
 			Navigating += delegate(object sender, NavigatingCancelEventArgs e)
 			{
@@ -76,5 +78,23 @@ namespace Octgn.Launcher
 				page.BeginAnimation(UIElement.OpacityProperty, InAnimation);
 			};
 		}
-	}
+        public void navWnd_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!okToCloseMainWindow)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        public bool okToCloseMainWindow { get; set; }
+
+        private void NavigationWindow_Closed(object sender, EventArgs e)
+        {
+            var navWnd = Application.Current.MainWindow as Octgn.Launcher.LauncherWindow;
+            if (navWnd != null)
+            {
+                navWnd.Closing -= navWnd_Closing;
+            }
+        }
+    }
 }

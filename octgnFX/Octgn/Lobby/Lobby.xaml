@@ -1,0 +1,76 @@
+﻿<Page x:Class="Octgn.Lobby.Lobby" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="clr-namespace:Octgn.Lobby" 
+    WindowTitle="OCTGN - Lobby" Width="635" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="390" Height="592" VerticalAlignment="Top" Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+   <Grid>
+            <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="Auto" />
+            <RowDefinition Height="477*" />
+            <RowDefinition Height="52*" />
+        </Grid.RowDefinitions>
+        <Border Style="{StaticResource Panel}" Grid.Row="1" Margin="8">
+         <Grid>
+            <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="486" />
+               <ColumnDefinition Width="136*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Margin="16,8,8,8" Text="Your nickname:" Name="tbNickname" />
+                <Button Content="Back" Grid.Column="1" Margin="5" Name="button2" Click="button2_Click" />
+            </Grid>
+      </Border>
+
+        <TabControl Grid.Row="1" Grid.RowSpan="4" HorizontalAlignment="Stretch" Margin="8,60,8,8" Name="tabControl1" VerticalAlignment="Stretch">
+            <TabItem Header="Lobby Chat" Name="tabItem1">
+                <Grid Grid.Row="4" HorizontalAlignment="Left" Name="grid1" Margin="5,5,0,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="383" />
+                        <RowDefinition Height="48" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="495*" />
+                        <ColumnDefinition Width="145" />
+                    </Grid.ColumnDefinitions>
+                    <ListBox Grid.Column="1" Name="listBox1" Margin="5,5,6,5" Width="134" />
+                    <Button Content="Send" Grid.Column="1" Grid.Row="1" Margin="5" Name="button1" Click="button1_Click" />
+                    <RichTextBox Margin="5" Name="rtbChat" IsDocumentEnabled="True" VerticalScrollBarVisibility="Auto" IsReadOnly="True" TextChanged="rtbChat_TextChanged" MouseUp="rtbChat_MouseUp" />
+                    <TextBox Grid.Row="1" Margin="5" Name="tbMess" VerticalContentAlignment="Center" KeyUp="tbMess_KeyUp" />
+                </Grid>                
+            </TabItem>
+            <TabItem Header="Games">
+                <Grid Grid.Row="4" HorizontalAlignment="Stretch" Margin="0" Name="grid2" VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="49*" />
+                        <RowDefinition Height="398*" />
+                    </Grid.RowDefinitions>
+                    <Button Content="Join" Height="35" Margin="0,10,6,0" Name="btnJoin" VerticalAlignment="Top" HorizontalAlignment="Right" Width="92" Click="button3_Click" />
+                    <Button Content="Host" Height="35" Margin="407,10,0,0" Name="btnHost" VerticalAlignment="Top" HorizontalAlignment="Left" Width="96" Click="btnHost_Click" />
+                    <DataGrid AutoGenerateColumns="False" Grid.Row="1" HorizontalAlignment="Stretch" Margin="5" Name="dataGrid1" VerticalAlignment="Stretch" ItemsSource="{Binding}" IsEnabled="True" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="GID" Binding="{Binding Path=intUGameNum}"/>
+                            <DataGridTextColumn Header="Host" Binding="{Binding Path=strHostName}" MinWidth="110" />
+                            <DataGridTextColumn Header="Game" Binding="{Binding Path=strGameName}" MinWidth="180" />
+                            <DataGridTextColumn Header="Game Info" Binding="{Binding Path=strName}" MinWidth="250" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <TextBlock Margin="6,17,514,4" Name="textBlock1" Text="Game info: " Width="87" Foreground="White" Background="{x:Null}" />
+                    <TextBox Height="34" HorizontalAlignment="Left" Margin="73,10,0,0" Name="textBox1" VerticalAlignment="Top" Width="153" VerticalContentAlignment="Center" />
+                    <ComboBox Height="34" HorizontalAlignment="Left" Margin="232,10,0,0" Name="comboBox1" VerticalAlignment="Top" Width="169" ItemsSource="{Binding}" />
+                </Grid>               
+            </TabItem>
+        </TabControl>
+        <Rectangle Grid.Row="5" HorizontalAlignment="Stretch" Margin="0" Name="rectangle1" Stroke="Black" VerticalAlignment="Stretch">
+            <Rectangle.Fill>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="White" Offset="0" />
+                    <GradientStop Color="#FF24679D" Offset="1" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Image Height="52" Name="imgSound" Stretch="Uniform" Width="59"  Margin="0,0,576,0" Grid.Row="5" MouseUp="image1_MouseUp" Source="/OCTGNwLobby;component/Images/audio.png" />
+    </Grid>
+</Page>

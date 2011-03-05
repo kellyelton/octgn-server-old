@@ -2,11 +2,11 @@ using System.Reflection;
 using System.Windows;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Octgn")]
+[assembly: AssemblyTitle("OctgnwLobby")]
 [assembly: AssemblyDescription("Octgn 2.0 client")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Octgn")]
-[assembly: AssemblyProduct("Octgn")]
+[assembly: AssemblyCompany("OctgnwLobby")]
+[assembly: AssemblyProduct("OctgnwLobby")]
 [assembly: AssemblyCopyright("Copyright @ jods 2006-2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

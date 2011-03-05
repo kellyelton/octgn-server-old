@@ -67,6 +67,11 @@ namespace Octgn.Networking
       if (navWnd == null) return;
       var startPage = navWnd.Content as Launcher.StartGame;
       if (startPage != null) startPage.Start();
+      else//TODO Changed here for lobby
+      {
+          var startPage2 = navWnd.Content as Lobby.StartGame;
+          if (startPage2 != null) startPage2.Start();
+      }
     }
 
     public void Settings(bool twoSidedTable)
@@ -195,7 +200,8 @@ namespace Octgn.Networking
       Program.Trace.TraceEvent(TraceEventType.Information, EventIds.Event, "{0} has joined the game.", nick);
       var player = new Player(Program.Game.Definition, nick, id, pkey);
       // Define the default table side if we are the host
-      if (Program.Server != null)
+        //TODO Fixed for lobby version, but should stay intact for normal.
+      if (Program.IsHost != null)
         player.InvertedTable = (Player.AllExceptGlobal.Count() & 1) == 0;
     }
 

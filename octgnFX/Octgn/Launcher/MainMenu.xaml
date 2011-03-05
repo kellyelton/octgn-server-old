@@ -60,12 +60,12 @@
       <Grid>
         <TextBlock FontSize="48" FontStyle="Italic" FontWeight="Bold" Foreground="#FFFF0000" 
                    HorizontalAlignment="Left" VerticalAlignment="Center" Margin="157,0,0,3"    
-									 Style="{x:Null}" Text="OCTGN">	
+									 Style="{x:Null}" Text="OCTGNwLobby">	
 					<TextBlock.Effect>
 						<DropShadowEffect Opacity="0.4" ShadowDepth="2" />
 					</TextBlock.Effect>
         </TextBlock>
-        <TextBlock x:Name="versionText" HorizontalAlignment="Right" Margin="0,0,30,8" VerticalAlignment="Bottom" Foreground="#FFF00000" TextWrapping="Wrap" Style="{x:Null}">
+        <TextBlock x:Name="versionText" HorizontalAlignment="Right" Margin="0,0,16,27" VerticalAlignment="Bottom" Foreground="#FFF00000" TextWrapping="Wrap" Style="{x:Null}">
           Version 0.2.0.1
         </TextBlock>
 
@@ -129,8 +129,8 @@
             </Canvas>
           </Canvas>
         </Viewbox>
-
-      </Grid>
+                <TextBlock Foreground="#FFF00000" HorizontalAlignment="Right" Margin="0,0,16,6" Name="tbRelease" Style="{x:Null}" TextWrapping="Wrap" VerticalAlignment="Bottom">Release 0.2.0.1</TextBlock>
+            </Grid>
     </Border>
 
     <Button Content="Start a new game" Tag="Host a new game. Other players will connect to your computer."
@@ -148,12 +148,15 @@
     <Button Content="Quit" Tag="Close OCTGN." 
             Margin="8,136,8,0" VerticalAlignment="Top" Height="60" Grid.Column="1" Grid.Row="1" 
             Click="QuitClicked" MouseEnter="EnterBtn" MouseLeave="LeaveBtn" />
-
-    <Border Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Stretch" Margin="8"
+        <Button Content="Lobby" Tag="Go to the game lobby." 
+            Margin="8,136,8,0" VerticalAlignment="Top" Height="60" Grid.Row="1" 
+            Click="LobbyClicked" MouseEnter="EnterBtn" MouseLeave="LeaveBtn" />
+        <Border Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Stretch" Margin="8"
             Style="{StaticResource Panel}">
       <Grid>
         <TextBlock x:Name="hintText" Height="Auto" Panel.ZIndex="1" Margin="16,0,16,0" VerticalAlignment="Center" />
       </Grid>
     </Border>
-  </Grid>
+       
+    </Grid>
 </Page>

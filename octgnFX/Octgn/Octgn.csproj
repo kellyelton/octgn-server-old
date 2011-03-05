@@ -7,7 +7,7 @@
     <ProjectGuid>{C6ADE75C-5BC2-47DB-9240-B99C66431EF3}</ProjectGuid>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <RootNamespace>Octgn</RootNamespace>
-    <AssemblyName>OCTGN</AssemblyName>
+    <AssemblyName>OCTGNwLobby</AssemblyName>
     <WarningLevel>4</WarningLevel>
     <OutputType>winexe</OutputType>
     <!-- Most people will use Publish dialog in Visual Studio to increment this -->
@@ -27,7 +27,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <ExpressionBlendVersion>4.0.20421.0</ExpressionBlendVersion>
     <Utf8Output>true</Utf8Output>
-    <PublishUrl>C:\OCTGN FX\Publish\</PublishUrl>
+    <PublishUrl>ftp://184.106.76.80/octgndownload/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -37,14 +37,17 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://octgn.net/octgn-client/</InstallUrl>
-    <ProductName>OCTGN</ProductName>
-    <PublisherName>OCTGN</PublisherName>
+    <InstallUrl>http://www.skylabsonline.com/octgndownload/</InstallUrl>
+    <UpdateUrl>http://www.skylabsonline.com/octgndownload/</UpdateUrl>
+    <ProductName>OCTGNwLobby</ProductName>
+    <PublisherName>OCTGNwLobby</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>2</ApplicationRevision>
-    <ApplicationVersion>0.9.3.2</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>1.0.1.8</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -127,6 +130,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq">
@@ -213,6 +217,23 @@
     </Compile>
     <Compile Include="Launcher\StartGame.xaml.cs">
       <SubType>Code</SubType>
+      <DependentUpon>StartGame.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby\HostedGame.cs" />
+    <Compile Include="Lobby\LobbyWindow.xaml.cs">
+      <DependentUpon>LobbyWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby\Lobby.xaml.cs">
+      <DependentUpon>Lobby.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby\LobbyClient.cs" />
+    <Compile Include="Lobby\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby\ServerConnect.xaml.cs">
+      <DependentUpon>ServerConnect.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Lobby\StartGame.xaml.cs">
       <DependentUpon>StartGame.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networking\BinaryParser.cs">
@@ -402,7 +423,7 @@
     </None>
     <None Include="Properties\app.manifest" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripting\PythonAPI.py" />
@@ -417,6 +438,21 @@
     <Resource Include="Resources\Icons\Reset.png" />
     <Resource Include="Resources\Icons\Ok.png" />
     <Resource Include="Resources\Icons\Save.png" />
+    <EmbeddedResource Include="Resources\click.wav" />
+    <None Include="Resources\audio.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\audiomute.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Resource Include="Images\audio.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\audiomute.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <None Include="Resources\logoff.wav" />
+    <None Include="Resources\logon.wav" />
     <Content Include="Scripting\Lib\abc.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -537,6 +573,26 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Launcher\StartGame.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\LobbyWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\Lobby.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\Login.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\ServerConnect.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Lobby\StartGame.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -723,6 +779,10 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\NetShit\trunk\NetShit.csproj">
+      <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
+      <Name>NetShit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Octgn.Data\Octgn.Data.csproj">
       <Project>{6C6E53BA-E75B-4E93-98CA-3C39ED908B2C}</Project>
       <Name>Octgn.Data</Name>

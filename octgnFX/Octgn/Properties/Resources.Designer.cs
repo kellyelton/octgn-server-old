@@ -22,7 +22,7 @@ namespace Octgn.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Octgn.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Octgn.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace Octgn.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -60,55 +60,98 @@ namespace Octgn.Properties {
             }
         }
         
+        public static System.Drawing.Bitmap audio {
+            get {
+                object obj = ResourceManager.GetObject("audio", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        public static System.Drawing.Bitmap audiomute {
+            get {
+                object obj = ResourceManager.GetObject("audiomute", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
-        ///   Looks up a localized string similar to class idict: 
-        ///    def __init__(self,inDict=None): 
-        ///        &quot;&quot;&quot;Constructor: takes conventional dictionary 
-        ///           as input (or nothing)&quot;&quot;&quot; 
-        ///        self.dict = {} 
-        ///        if inDict != None: 
-        ///            for key in inDict: 
-        ///                k = key.lower() 
-        ///                self.dict[k] = (key, inDict[key]) 
-        ///        self.keyList = self.dict.keys() 
-        ///        return 
-        /// 
-        ///    def __iter__(self): 
-        ///        self.iterPosition = 0 
-        ///        return(self) 
-        /// 
-        ///    def next(self): 
-        ///        if self.iterPosi [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to import collections
+        ///
+        ///class idict(collections.Mapping):
+        ///
+        ///    def __init__(self, pairs): 
+        ///        &quot;&quot;&quot;Constructor: takes an iterable of tuples&quot;&quot;&quot; 
+        ///        self._dict = {} 
+        ///        for key, value in pairs: 
+        ///            k = key.lower() 
+        ///            self._dict[k] = (key, value) 
+        ///
+        ///    def __getitem__(self, key):
+        ///        k = key.lower()
+        ///        pair = self._dict[k]
+        ///        return pair[1]
+        ///
+        ///    def __len__(self):
+        ///        return len(self._dict)
+        ///
+        ///    def __iter__(self):
+        ///        return (key for key, v [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string CaseInsensitiveDict {
+        public static string CaseInsensitiveDict {
             get {
                 return ResourceManager.GetString("CaseInsensitiveDict", resourceCulture);
             }
         }
         
+        public static System.IO.UnmanagedMemoryStream click {
+            get {
+                return ResourceManager.GetStream("click", resourceCulture);
+            }
+        }
+        
+        public static System.IO.UnmanagedMemoryStream logoff {
+            get {
+                return ResourceManager.GetStream("logoff", resourceCulture);
+            }
+        }
+        
+        public static System.IO.UnmanagedMemoryStream logon {
+            get {
+                return ResourceManager.GetStream("logon", resourceCulture);
+            }
+        }
+        
         /// <summary>
-        ///   Looks up a localized string similar to class NamedObject(object):
-        ///  def __init__(self, id, name):
-        ///    self._id = id
-        ///    self._name = name
-        ///  @property
-        ///  def name(self): return self._name
-        ///  
-        ///class Group(NamedObject):
-        ///  def __init__(self, id, name, player = None):
-        ///    NamedObject.__init__(self, id, name)
-        ///    self._player = player
-        ///  @property
-        ///  def player(self): return self._player
+        ///   Looks up a localized string similar to #Rotation constants
+        ///Rot0 = 0
+        ///Rot90 = 1
+        ///Rot180 = 2
+        ///Rot270 = 3
         ///
-        ///class Counter(NamedObject):
-        ///  def __init__(self, id, name, player):
-        ///    NamedObject.__init__(self, id, name)
-        ///    self._player = player
-        ///  @property
-        ///  d [rest of string was truncated]&quot;;.
+        ///def mute():
+        ///  class Muted(object):
+        ///    def __enter__(self):
+        ///      return self
+        ///    def __exit__(self, type, value, tb):
+        ///      _api.Mute(False)
+        ///  _api.Mute(True)
+        ///  return Muted()
+        ///
+        ///def notify(message):
+        ///  _api.Notify(message)
+        ///
+        ///def rnd(min, max):
+        ///  return _api.Random(min, max)
+        ///
+        ///def confirm(message):
+        ///  return _api.Confirm(message)
+        ///
+        ///def askInteger(question, defaultAnswer):
+        ///  return _api.AskInteger(question, defaultAnswer)
+        ///
+        ///def [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string PythonAPI {
+        public static string PythonAPI {
             get {
                 return ResourceManager.GetString("PythonAPI", resourceCulture);
             }

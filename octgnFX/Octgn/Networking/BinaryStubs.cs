@@ -1161,7 +1161,8 @@ namespace Octgn.Networking
 			}
 			catch 
 			{ 
-				if (Program.Server != null && Program.Server.Disconnected(to))
+                //TODO Changed for lobby, but should stay this way.
+				if (Program.IsHost)
 					return;
 				Program.Client.Disconnected();
 			}

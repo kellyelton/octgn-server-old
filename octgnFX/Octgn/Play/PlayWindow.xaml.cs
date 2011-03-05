@@ -119,6 +119,7 @@ namespace Octgn.Play
       // Fix for this bug: http://wpf.codeplex.com/workitem/14078
       ribbon.IsMinimized = false;
 
+
       base.OnClosing(e);
       var wnd = new Launcher.LauncherWindow();
       Application.Current.MainWindow = wnd;

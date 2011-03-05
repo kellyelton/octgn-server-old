@@ -280,9 +280,9 @@ namespace Octgn.DeckBuilder
 			}
 
 			Game = null;	// Close DB if required
-			var menuWnd = new Launcher.LauncherWindow();
-			menuWnd.Show();
-			Application.Current.MainWindow = menuWnd;
+			//var menuWnd = new Launcher.LauncherWindow();
+			//menuWnd.Show();
+			//Application.Current.MainWindow = menuWnd;
 		}
 
 		private void CardSelected(object sender, SearchCardImageEventArgs e)
