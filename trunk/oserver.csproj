@@ -53,9 +53,15 @@
     <Compile Include="Containers\ClientContainer.cs" />
     <Compile Include="Containers\GameBox.cs" />
     <Compile Include="HostedGame.cs" />
+    <Compile Include="IrcBot.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="User.cs" />
     <Compile Include="UserMysql.cs" />
   </ItemGroup>
@@ -78,6 +84,10 @@
     <None Include="oserver.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="ServerOptions-Template.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -89,6 +99,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="currevision.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="daily.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -7,6 +7,8 @@ using Skylabs.ConsoleHelper;
 using Skylabs.oserver.Containers;
 using System.Net.Sockets;
 using Skylabs.Containers;
+using Skylabs.Properties;
+using System.Net;
 
 namespace Skylabs.oserver
 {
@@ -49,14 +51,45 @@ namespace Skylabs.oserver
                                     }
                                 }
                             }
-                            SocketMessage sm = new SocketMessage("LOGSUCCESS");
-                            sm.Arguments.Add(this.User.Username);
-                            writeMessage(sm);
-                            ClientContainer.UserEvent(UserEventType.LogIn, this);
-                            sm = new SocketMessage("CHATINFO");
-                            sm.Arguments.Add(MainClass.getDailyMessage());
-                            this.writeMessage(sm);
-                            LoggedIn = true;
+                            SocketMessage sm;
+                            if (input.Arguments.Count < 3)
+                            {
+                                ClientContainer.UserEvent(UserEventType.LogIn, this);
+                                sm = new SocketMessage("CHATINFO");
+                                sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
+                                this.writeMessage(sm);
+                                sm = new SocketMessage("CHATINFO");
+                                sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
+                                ClientContainer.AllUserCommand(sm);
+                                this.Close("Incompatable version.", true);
+                            }
+                            else
+                            {
+                                //TODO Modify here
+                                if (!input.Arguments[2].Equals(MainClass.getCurRevision().Trim()))
+                                {
+                                    ClientContainer.UserEvent(UserEventType.LogIn, this);
+                                    sm = new SocketMessage("CHATINFO");
+                                    sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
+                                    this.writeMessage(sm);
+                                    sm = new SocketMessage("CHATINFO");
+                                    sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
+                                    ClientContainer.AllUserCommand(sm);
+                                    this.Close("Incompatable version.", true);
+                                }
+                                else
+                                {
+                                    sm = new SocketMessage("LOGSUCCESS");
+                                    sm.Arguments.Add(this.User.Username);
+                                    writeMessage(sm);
+                                    ClientContainer.UserEvent(UserEventType.LogIn, this);
+                                    sm = new SocketMessage("CHATINFO");
+                                    sm.Arguments.Add(MainClass.getDailyMessage());
+                                    this.writeMessage(sm);
+                                    LoggedIn = true;
+                                }
+                            }
+                            
                         }
                         else
                         {
@@ -112,12 +145,20 @@ namespace Skylabs.oserver
                         stemp.Arguments.Add(gID.ToString());
 #if(DEBUG)
                         stemp.Arguments.Add("localhost");
+                        IPAddress[] addresslist = Dns.GetHostAddresses("localhost");
 #else
                         stemp.Arguments.Add(MainClass.getProperty("OusideHost"));
+                        IPAddress[] addresslist = Dns.GetHostAddresses(MainClass.getProperty("OusideHost"));
 #endif
                         int port = (gID + 6000);
                         stemp.Arguments.Add(port.ToString());
                         ClientContainer.AllUserCommand(stemp);
+
+                        IrcBot.GeneralChat(this.User.Username + " is hosting a " + h.GameName + " game at " + addresslist[0].ToString() + ":" + port.ToString() + " :" + h.Name);
+                        foreach (IPAddress theaddress in addresslist)
+                        {
+                            Console.WriteLine(theaddress.ToString());
+                        }
                         break;
                     case "UNHOST":
                         string ret = GameBox.RemoveByUID(User.UID);

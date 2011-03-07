@@ -50,7 +50,7 @@ namespace Skylabs.oserver
                 Stop();
                 return;
             }
-
+            IrcBot.Start();
             while (endIt == false)
             {
                 if (fKillTime == 0)
@@ -60,7 +60,7 @@ namespace Skylabs.oserver
                     
                 Thread.Sleep(1000);
             }
-
+            IrcBot.Stop();
             new ConsoleEvent("Quitting...").writeEvent(true);
             //ClientContainer.AllUserCommand(new NetShit.EndMessage());
             foreach(Client c in ClientContainer.Clients)
@@ -124,6 +124,9 @@ namespace Skylabs.oserver
                     ret += Server.Sock.Server.LocalEndPoint.ToString();
                     new ConsoleEvent(ret).writeEvent(true);
                     break;
+                case "ircchangenick":
+                    IrcBot.ChatAsUser(input.Args[0].Argument,"");
+                    break;
                 default:
                     new ConsoleEventError("Invalid command '" + input.RawData + "'.", new Exception("Invalid console command.")).writeEvent(true);
                     break;
@@ -146,6 +149,19 @@ namespace Skylabs.oserver
                 ret = "";
             }
             return ret;
+        }
+        public static String getCurRevision()
+        {
+            String s = "";
+            try
+            {
+                s = System.IO.File.ReadAllText(RootPath + "currevision.txt");
+            }
+            catch (Exception e)
+            {
+                ConsoleEventLog.addEvent(new ConsoleEventError("Problem opening revision file.", e), true);
+            }
+            return s;
         }
         public static String getDailyMessage()
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Skylabs.NetShit;
+using Skylabs.Containers;
 
 namespace Skylabs.oserver.Containers
 {
@@ -111,36 +112,60 @@ namespace Skylabs.oserver.Containers
     	        	    }
     	        	    else
     	        	    {
-    	        		    SocketMessage sm = new SocketMessage("CHATERROR");
-    	        		    sm.Arguments.Add("User '" + to + "' not online.");
-    	        		    from.writeMessage(sm);
+                            if (to.Substring(0, 5).ToLower().Equals("<irc>"))
+                            {
+                                IrcBot.PMUser(to.Substring(5),from.User.Username, chat);
+                            }
+                            else
+                            {
+                                SocketMessage sm = new SocketMessage("CHATERROR");
+                                sm.Arguments.Add("User '" + to + "' not online.");
+                                from.writeMessage(sm);
+                            }
     	        	    }
         		    }
         		
     		    }
-    		    else if(command.Equals("?"))
-    		    {
+                else if (command.Equals("i"))
+                {
+                    SocketMessage sm = new SocketMessage("LOBCHAT");
+                    sm.Arguments.Add(user);
+                    sm.Arguments.Add("<ircvisible>" + chat);
+                    AllUserCommand(sm);
+                    if (user.Length > 5)
+                    {
+                        if (!user.Substring(0, 5).Equals("<irc>"))
+                            IrcBot.ChatAsUser(user, chat);
+                    }
+                    else
+                        IrcBot.ChatAsUser(user, chat);
+                }
+                else if (command.Equals("?"))
+                {
                     //TODO Implement /? help function
-    			    //Client from = Clients.getClientFromUserName(user);
-                    /*
     			    String ch = "";
-    			    ch = ch.concat("CHATINFO" + (char)3 + "Lobby chat help\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "---------------\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "\\?\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "--This menu.\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "\\w user message\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "--sends the 'user' 'message'\n");
-    			    ch = ch.concat("CHATINFO" + (char)3 + "---------------\n");
+                    ch += "Lobby chat help\n";
+    			    ch += "-----------------------------------------------------------\n";
+    			    ch += "\\?\n";
+    			    ch += "--This menu.\n";
+    			    ch += "\\w user message\n";
+    			    ch += "--Sends the 'user' 'message'\n";
+                    ch += "\\r message\n";
+                    ch += "--Replies to the last received whisper 'message'\n";
+                    ch += "\\i message\n";
+                    ch += "--Writes the 'message' to the irc chat as you\n";
+                    ch += "-----------------------------------------------------------\n";
+                    SocketMessage sm = new SocketMessage("CHATINFO");
+                    sm.Arguments.Add(ch);
     			    //from.writeLine(ch);
-                     */
-    		    }
-    		    else
-    		    {
-    			    SocketMessage sm =new SocketMessage("LOBCHAT");
-    			    sm.Arguments.Add(user);
-    			    sm.Arguments.Add(chat);
-    			    AllUserCommand(sm);
-    		    }
+                }
+                else
+                {
+                    SocketMessage sm = new SocketMessage("LOBCHAT");
+                    sm.Arguments.Add(user);
+                    sm.Arguments.Add(chat);
+                    AllUserCommand(sm);
+                }
     	    }
     	    else
     	    {
