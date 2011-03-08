@@ -142,7 +142,6 @@ namespace Skylabs.oserver.Containers
                 }
                 else if (command.Equals("?"))
                 {
-                    //TODO Implement /? help function
     			    String ch = "";
                     ch += "Lobby chat help\n";
     			    ch += "-----------------------------------------------------------\n";

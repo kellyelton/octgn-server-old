@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Skylabs.NetShit;
-using Skylabs.ConsoleHelper;
-using Skylabs.oserver.Containers;
-using System.Net.Sockets;
-using Skylabs.Containers;
-using Skylabs.Properties;
 using System.Net;
+using System.Text;
+using Skylabs.ConsoleHelper;
+using Skylabs.Containers;
+using Skylabs.NetShit;
+using Skylabs.oserver.Containers;
 
 namespace Skylabs.oserver
 {
     public class Client : ShitSock
     {
-        public User User { get { return _User;} set { _User = value;} }
+        public User User { get { return _User; } set { _User = value; } }
+
         public Boolean LoggedIn { get; set; }
+
         public int ID { get; set; }
+
         public Boolean NotifiedLoggedOff { get; set; }
 
         private User _User = new User();
         private Boolean isRc = false;
 
-        override public void handleError(Exception e,String error)
+        override public void handleError(Exception e, String error)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError(error, e), true);
         }
@@ -65,7 +65,6 @@ namespace Skylabs.oserver
                             }
                             else
                             {
-                                //TODO Modify here
                                 if (!input.Arguments[2].Equals(MainClass.getCurRevision().Trim()))
                                 {
                                     ClientContainer.UserEvent(UserEventType.LogIn, this);
@@ -89,7 +88,6 @@ namespace Skylabs.oserver
                                     LoggedIn = true;
                                 }
                             }
-                            
                         }
                         else
                         {
@@ -162,7 +160,7 @@ namespace Skylabs.oserver
                         break;
                     case "UNHOST":
                         string ret = GameBox.RemoveByUID(User.UID);
-                        String[] rets = ret.Split(new char[1] { ':' },StringSplitOptions.RemoveEmptyEntries);
+                        String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (String b in rets)
                         {
                             if (!ret.Equals("-1"))
@@ -216,7 +214,6 @@ namespace Skylabs.oserver
                                 //Main.writeEvent("Sending GAMELIST: " + stemp3.getMessage());
                                 this.writeMessage(stemp3);
                             }
-
                         }
                         break;
                     default:
@@ -235,35 +232,34 @@ namespace Skylabs.oserver
                         SocketMessage sm = new SocketMessage("CHATINFO");
                         sm.Arguments.Add(input.Arguments[0]);
                         ClientContainer.AllUserCommand(sm);
-                    break;
+                        break;
                     case "2":
                         MainClass.KillServer();
-                    break;
+                        break;
                     case "3":
                         try
                         {
                             int time = int.Parse(input.Arguments[0]);
                             MainClass.TimeKillServer(time, null);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
-        			
                         }
-                    break;
+                        break;
                     case "4":
                         try
                         {
                             int time = int.Parse(input.Arguments[0]);
                             MainClass.TimeKillServer(time, input.Arguments[1]);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
-        			
                         }
-                    break;
+                        break;
                 }
             }
         }
+
         override public void handleConnect(String host, int port)
         {
             ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " connected."), true);
@@ -271,7 +267,7 @@ namespace Skylabs.oserver
 
         override public void handleDisconnect(String reason, String host, int port)
         {
-            if(!NotifiedLoggedOff)
+            if (!NotifiedLoggedOff)
             {
                 ClientContainer.UserEvent(UserEventType.LogOut, this);
                 this.NotifiedLoggedOff = true;

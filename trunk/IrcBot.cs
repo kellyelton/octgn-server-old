@@ -99,6 +99,8 @@ namespace Skylabs
         }
         private static void HandleLine(String line)
         {
+            if (line == null)
+                return;
             Regex rpm = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG #octgn \\:(.+)",RegexOptions.IgnoreCase);
             Regex rquit = new Regex("\\:([^!]+){1}![^ ]+ QUIT",RegexOptions.IgnoreCase);
             Regex rjoin = new Regex("\\:([^!]+){1}![^ ]+ JOIN",RegexOptions.IgnoreCase);
@@ -159,6 +161,7 @@ namespace Skylabs
                 }
                 else if (rjoin.IsMatch(line))
                 {
+                    // Make sure that user isn't online first
                     Match m = rjoin.Match(line);
                     String user = m.Groups[1].Value;
                     Array.Resize<String>(ref Users, Users.Length + 1);
