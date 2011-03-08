@@ -83,6 +83,7 @@ namespace Skylabs.ConsoleHelper
                     sb = new StringBuilder();
                     endLine = false;
                 }
+                Thread.Sleep(50);
             }
         }
 

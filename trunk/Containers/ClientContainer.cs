@@ -157,6 +157,12 @@ namespace Skylabs.oserver.Containers
                     ch += "-----------------------------------------------------------\n";
                     SocketMessage sm = new SocketMessage("CHATINFO");
                     sm.Arguments.Add(ch);
+                    Client c = ClientContainer.getClientFromUserName(user);
+                    if(c!= null)
+                    {
+                     if(c.Connected && c.LoggedIn)   
+                         c.writeMessage(sm);
+                    }
     			    //from.writeLine(ch);
                 }
                 else

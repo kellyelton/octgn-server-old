@@ -1,6 +1,8 @@
 Welcome to the OCTGN Lobby.
 type /w username message to whisper someone
 type /r message to reply back to a previous whisper
+type /i to send a message to the irc chat
+type /? for help
 press up or down keys to browse last message you sent
 Click a user's name to whisper them
 

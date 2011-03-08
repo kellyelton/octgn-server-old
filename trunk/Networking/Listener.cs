@@ -71,7 +71,7 @@ namespace Skylabs.Networking
                 {
                     if (se.SocketErrorCode == SocketError.WouldBlock)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(1000);
                     }
                 }
             }

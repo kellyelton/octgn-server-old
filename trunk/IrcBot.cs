@@ -63,7 +63,7 @@ namespace Skylabs
                         HandleLine(inputLine);
 
                     }
-                    Thread.Sleep(500);
+                    Thread.Sleep(1000);
                 }
                 catch (SocketException se)
                 {
@@ -72,6 +72,7 @@ namespace Skylabs
                         ConsoleEventLog.addEvent(new ConsoleEventError("Irc SocketException", se), true);
                         //break;
                     }
+                    Thread.Sleep(1000);
                 }
                 catch (IOException e)
                 {
@@ -83,6 +84,7 @@ namespace Skylabs
                         if(se.SocketErrorCode != SocketError.WouldBlock)
                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
                     }
+                    Thread.Sleep(1000);
                     //break;
                 }
                 // Close all streams
