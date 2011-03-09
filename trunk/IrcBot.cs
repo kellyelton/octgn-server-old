@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Skylabs.NetShit;
-using System.Threading;
-using System.Net.Sockets;
 using System.IO;
-using Skylabs.ConsoleHelper;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Skylabs.ConsoleHelper;
+using Skylabs.NetShit;
 using Skylabs.oserver.Containers;
 
 namespace Skylabs
@@ -15,9 +12,9 @@ namespace Skylabs
     public static class IrcBot
     {
         private static string SERVER = "irc.ircstorm.net";
-        private static int PORT = 6667; 
-        private static string USER = "USER OctgnwLobby OctgnwLobby irc.ircstorm.net :OctgnwLobby"; 
-        private static string NICK = "OctgnwLobby"; 
+        private static int PORT = 6667;
+        private static string USER = "USER OctgnwLobby OctgnwLobby irc.ircstorm.net :OctgnwLobby";
+        private static string NICK = "OctgnwLobby";
         private static string CHANNEL = "#octgn";
         private static Boolean run;
         private static Thread thread;
@@ -26,7 +23,8 @@ namespace Skylabs
         private static TcpClient irc;
         private static NetworkStream stream;
         private static String[] Users;
-        public static void Start ()
+
+        public static void Start()
         {
             run = true;
             irc = null;
@@ -43,6 +41,7 @@ namespace Skylabs
             thread = new Thread(new ThreadStart(Run));
             thread.Start();
         }
+
         private static void Run()
         {
             string inputLine = "";
@@ -54,6 +53,7 @@ namespace Skylabs
             writer.Flush();
             writer.WriteLine("NICK " + NICK);
             writer.Flush();
+
             while (run)
             {
                 try
@@ -61,7 +61,6 @@ namespace Skylabs
                     while ((inputLine = reader.ReadLine()) != null)
                     {
                         HandleLine(inputLine);
-
                     }
                     Thread.Sleep(1000);
                 }
@@ -81,7 +80,7 @@ namespace Skylabs
                         ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
                     else
                     {
-                        if(se.SocketErrorCode != SocketError.WouldBlock)
+                        if (se.SocketErrorCode != SocketError.WouldBlock)
                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
                     }
                     Thread.Sleep(1000);
@@ -93,18 +92,20 @@ namespace Skylabs
             reader.Close();
             irc.Close();
         }
+
         public static void Stop()
         {
             run = false;
         }
+
         private static void HandleLine(String line)
         {
             if (line == null)
                 return;
-            Regex rpm = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG #octgn \\:(.+)",RegexOptions.IgnoreCase);
-            Regex rquit = new Regex("\\:([^!]+){1}![^ ]+ QUIT",RegexOptions.IgnoreCase);
-            Regex rjoin = new Regex("\\:([^!]+){1}![^ ]+ JOIN",RegexOptions.IgnoreCase);
-            Regex rpmess = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG ([^ #]+){1} \\:(.+)",RegexOptions.IgnoreCase);
+            Regex rpm = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG #octgn \\:(.+)", RegexOptions.IgnoreCase);
+            Regex rquit = new Regex("\\:([^!]+){1}![^ ]+ QUIT", RegexOptions.IgnoreCase);
+            Regex rjoin = new Regex("\\:([^!]+){1}![^ ]+ JOIN", RegexOptions.IgnoreCase);
+            Regex rpmess = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG ([^ #]+){1} \\:(.+)", RegexOptions.IgnoreCase);
             //353 OctgnwLobby = #OCTGN :
             line = line.Replace(":helios.ircstorm.net", "");
             line = line.Trim();
@@ -116,9 +117,8 @@ namespace Skylabs
                     String user = m.Groups[1].Value;
                     String mess = m.Groups[2].Value;
                     //SocketMessage sm = new SocketMessage("CHAT");
-                    ClientContainer.LobbyChat("<irc>" + user,mess);
+                    ClientContainer.LobbyChat("<irc>" + user, mess);
                     //ClientContainer.AllUserCommand(
-                    
                 }
                 else if (rpmess.IsMatch(line))
                 {
@@ -191,6 +191,7 @@ namespace Skylabs
                 ConsoleWriter.writeLine("#IRC-IN: " + line, true);
             }
         }
+
         public static Boolean UserOnline(String user)
         {
             foreach (String u in Users)
@@ -200,14 +201,17 @@ namespace Skylabs
             }
             return false;
         }
+
         public static void PMUser(string username, string chat)
         {
             WriteLine("PRIVMSG " + username + " :" + chat);
         }
+
         public static void PMUser(String username, String fromuser, String chat)
         {
             WriteLine("PRIVMSG " + username + " :" + fromuser + " says: " + chat);
         }
+
         public static void ChatAsUser(String username, String chat)
         {
             String user = username;
@@ -216,18 +220,19 @@ namespace Skylabs
                 user += "_";
             }
             //WriteLine("NICK " + user);
-            WriteLine("PRIVMSG #OCTGN :" + username + " says: " +  chat);
+            WriteLine("PRIVMSG #OCTGN :" + username + " says: " + chat);
         }
+
         public static void GeneralChat(String chat)
         {
-           // WriteLine("NICK OctgnwLobby");
+            // WriteLine("NICK OctgnwLobby");
             WriteLine("PRIVMSG #OCTGN :" + chat);
         }
+
         public static void WriteLine(String line)
         {
             writer.WriteLine(line);
             writer.Flush();
         }
-    } 
-
+    }
 }
