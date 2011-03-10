@@ -231,8 +231,14 @@ namespace Skylabs
 
         public static void WriteLine(String line)
         {
-            writer.WriteLine(line);
-            writer.Flush();
+            try
+            {
+                writer.WriteLine(line);
+                writer.Flush();
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

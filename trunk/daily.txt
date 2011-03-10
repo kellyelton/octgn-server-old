@@ -8,7 +8,7 @@ Click a user's name to whisper them
 
 View the latest update information here http://www.skylabsonline.com/blog/2011/03/05/octgn-update-1-0-1-0/
  
-IF YOUR OCTGN DOESN'T SAY 'OCTGNwLobby' on the main page, AND IT DOESN'T SAY Release 1.0.1.10, THEN YOU NEED TO GO TO THE SITE AND REDOWNLOAD IT!!!
+IF YOUR OCTGN DOESN'T SAY 'OCTGNwLobby' on the main page, AND IT DOESN'T SAY Release 1.0.1.11, THEN YOU NEED TO GO TO THE SITE AND REDOWNLOAD IT!!!
 
 Have fun!
 Please report all bugs to http://www.skylabsonline.com/blog/project/octgn-w-lobby
