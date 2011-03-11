@@ -141,22 +141,25 @@ namespace Skylabs
                 {
                     Match m = rquit.Match(line);
                     String user = m.Groups[1].Value;
-                    if (UserOnline(user))
+                    if (user != null)
                     {
-                        String[] temp = new String[Users.Length - 1];
-                        int i = 0;
-                        foreach (String u in Users)
+                        if (UserOnline(user))
                         {
-                            if (!u.Equals(user))
+                            String[] temp = new String[Users.Length - 1];
+                            int i = 0;
+                            foreach (String u in Users)
                             {
-                                temp[i] = u;
-                                i++;
+                                if (!u.Equals(user))
+                                {
+                                    temp[i] = u;
+                                    i++;
+                                }
                             }
+                            Users = temp;
+                            SocketMessage sm = new SocketMessage("CHATINFO");
+                            sm.Arguments.Add("IRC User " + user + " offline.");
+                            ClientContainer.AllUserCommand(sm);
                         }
-                        Users = temp;
-                        SocketMessage sm = new SocketMessage("CHATINFO");
-                        sm.Arguments.Add("IRC User " + user + " offline.");
-                        ClientContainer.AllUserCommand(sm);
                     }
                 }
                 else if (rjoin.IsMatch(line))

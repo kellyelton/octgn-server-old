@@ -9,7 +9,11 @@ View the latest update information here http://www.skylabsonline.com/blog/2011/0
 
 Have fun!
 Please report all bugs to http://www.skylabsonline.com/bugzilla3/
-Please report all bugs to http://www.skylabsonline.com/bugzilla3/
-Please report all bugs to http://www.skylabsonline.com/bugzilla3/
 
 Follow development on Twitter http://twitter.com/SkylabsOnline
+
+Get Involved!
+-------------------------------
+Feature Request: http://www.skylabsonline.com/blog/2011/02/23/octgn-ideas/
+Idea's and proposals for Lobby moderation: http://www.skylabsonline.com/blog/2011/02/21/octgn-moderators/
+Idea's and proposals for Legal Game Types: http://www.skylabsonline.com/blog/project/octgn-w-lobby/issue/legal-types-for-games/
