@@ -88,6 +88,7 @@ namespace Skylabs
                 }
                 // Close all streams
             }
+
             writer.Close();
             reader.Close();
             irc.Close();

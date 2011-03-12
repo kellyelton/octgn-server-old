@@ -54,6 +54,9 @@ namespace Skylabs.oserver
                             SocketMessage sm;
                             if (input.Arguments.Count < 3)
                             {
+                                sm = new SocketMessage("LOGSUCCESS");
+                                sm.Arguments.Add(this.User.Username);
+                                writeMessage(sm);
                                 ClientContainer.UserEvent(UserEventType.LogIn, this);
                                 sm = new SocketMessage("CHATINFO");
                                 sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
@@ -67,6 +70,9 @@ namespace Skylabs.oserver
                             {
                                 if (!input.Arguments[2].Equals(MainClass.getCurRevision().Trim()))
                                 {
+                                    sm = new SocketMessage("LOGSUCCESS");
+                                    sm.Arguments.Add(this.User.Username);
+                                    writeMessage(sm);
                                     ClientContainer.UserEvent(UserEventType.LogIn, this);
                                     sm = new SocketMessage("CHATINFO");
                                     sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
