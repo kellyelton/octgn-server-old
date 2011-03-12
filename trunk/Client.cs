@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Skylabs.ConsoleHelper;
 using Skylabs.Containers;
 using Skylabs.NetShit;
@@ -58,13 +59,20 @@ namespace Skylabs.oserver
                                 sm.Arguments.Add(this.User.Username);
                                 writeMessage(sm);
                                 ClientContainer.UserEvent(UserEventType.LogIn, this);
-                                sm = new SocketMessage("CHATINFO");
-                                sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
-                                this.writeMessage(sm);
-                                sm = new SocketMessage("CHATINFO");
-                                sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
-                                ClientContainer.AllUserCommand(sm);
-                                this.Close("Incompatable version.", true);
+                                Thread th = new Thread(new ThreadStart(delegate()
+                                {
+                                    Thread.Sleep(1000);
+                                    sm = new SocketMessage("CHATINFO");
+                                    sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
+                                    this.writeMessage(sm);
+                                    sm = new SocketMessage("CHATINFO");
+                                    sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
+                                    ClientContainer.AllUserCommand(sm);
+                                    Thread.Sleep(1000);
+                                    this.Close("Incompatable version.", true);
+                                }
+                                ));
+                                th.Start();
                             }
                             else
                             {
@@ -74,13 +82,20 @@ namespace Skylabs.oserver
                                     sm.Arguments.Add(this.User.Username);
                                     writeMessage(sm);
                                     ClientContainer.UserEvent(UserEventType.LogIn, this);
-                                    sm = new SocketMessage("CHATINFO");
-                                    sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
-                                    this.writeMessage(sm);
-                                    sm = new SocketMessage("CHATINFO");
-                                    sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
-                                    ClientContainer.AllUserCommand(sm);
-                                    this.Close("Incompatable version.", true);
+                                    Thread th = new Thread(new ThreadStart(delegate()
+                                        {
+                                            Thread.Sleep(1000);
+                                            sm = new SocketMessage("CHATINFO");
+                                            sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
+                                            this.writeMessage(sm);
+                                            sm = new SocketMessage("CHATINFO");
+                                            sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
+                                            ClientContainer.AllUserCommand(sm);
+                                            Thread.Sleep(1000);
+                                            this.Close("Incompatable version.", true);
+                                        }
+                                    ));
+                                    th.Start();
                                 }
                                 else
                                 {
