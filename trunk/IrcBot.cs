@@ -198,10 +198,14 @@ namespace Skylabs
 
         public static Boolean UserOnline(String user)
         {
-            foreach (String u in Users)
+            if (user != null)
             {
-                if (u.Equals(user))
-                    return true;
+                foreach (String u in Users)
+                {
+                    if (u.Equals(user))
+                        return true;
+                }
+                return false;
             }
             return false;
         }
