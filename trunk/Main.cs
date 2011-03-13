@@ -1,19 +1,24 @@
 using System;
-using Skylabs.ConsoleHelper;
-using System.Xml;
 using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Xml;
+using HTMLConverter;
+using Skylabs.ConsoleHelper;
+using Skylabs.Containers;
+using Skylabs.NetShit;
 using Skylabs.Networking;
 using Skylabs.oserver.Containers;
-using Skylabs.NetShit;
-using Skylabs.Containers;
 
 namespace Skylabs.oserver
 {
-	public class MainClass
-	{
+    public class MainClass
+    {
         public static XmlDocument Properties { get; set; }
+
         public static Listener Server { get; set; }
+
         private static bool endIt = false;
         private static int fKillTime = -1;
 #if(DEBUG)
@@ -22,8 +27,8 @@ namespace Skylabs.oserver
         public static String RootPath = "/var/oserver/";
 #endif
 
-		public static void Main (string[] args)
-		{
+        public static void Main(string[] args)
+        {
             //Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
             ConsoleWriter.CommandText = "O-Lobby: ";
@@ -37,7 +42,7 @@ namespace Skylabs.oserver
 
             String host = Properties.GetElementsByTagName("BindInt").Item(0).InnerText;
             String sport = Properties.GetElementsByTagName("BindPort").Item(0).InnerText;
-            int port =int.Parse(sport) ;
+            int port = int.Parse(sport);
 
             try
             {
@@ -51,19 +56,55 @@ namespace Skylabs.oserver
                 return;
             }
             IrcBot.Start();
+            TimeSpan timebetweenads = new TimeSpan(0, 0, 15);
+            TimeSpan curTimeSpan = new TimeSpan(0);
+            DateTime dtLastSent = DateTime.Now;
             while (endIt == false)
             {
+                curTimeSpan = new TimeSpan(DateTime.Now.Ticks - dtLastSent.Ticks);
+                if (curTimeSpan >= timebetweenads)
+                {
+                    WebClient wc = new WebClient();
+                    try
+                    {
+                        Uri u = new Uri("http://www.qksz.net/1e-jror");
+
+                        String ad = @wc.DownloadString(u);
+                        ad = ad.Replace("\\\\\\", "\\");
+                        Regex r = new Regex("^document\\.write\\(\"(.+)+\"\\);$");
+                        Match m = r.Match(ad);
+                        if (m.Groups.Count >= 2)
+                        {
+                            String fullhtml = m.Groups[1].Value;
+                            //ConsoleWriter.writeLine(fullhtml, true);
+                            String xaml = HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
+                            if (!xaml.Trim().Equals(""))
+                            {
+                                SocketMessage sm = new SocketMessage("XAMLCHAT");
+                                sm.Arguments.Add("SUPPORT");
+                                sm.Arguments.Add(xaml);
+                                ClientContainer.AllUserCommand(sm);
+                            }
+                            //ConsoleWriter.writeLine(xaml, true);
+                        }
+                        //ConsoleWriter.writeLine(evalstring, true);
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                    dtLastSent = DateTime.Now;
+                }
                 if (fKillTime == 0)
                     break;
                 if (fKillTime > 0)
                     fKillTime -= 1;
-                    
+
                 Thread.Sleep(1000);
             }
             IrcBot.Stop();
             new ConsoleEvent("Quitting...").writeEvent(true);
             //ClientContainer.AllUserCommand(new NetShit.EndMessage());
-            foreach(Client c in ClientContainer.Clients)
+            foreach (Client c in ClientContainer.Clients)
             {
                 c.Close("Server shutdown.", true);
             }
@@ -75,14 +116,15 @@ namespace Skylabs.oserver
 
             UnregisterHandlers();
             ConsoleReader.Stop();
-		}
+        }
 
         public static void KillServer()
         {
             ConsoleEventLog.addEvent(new ConsoleEvent("Killing server..."), true);
             endIt = true;
         }
-        public static void TimeKillServer(int time,String message)
+
+        public static void TimeKillServer(int time, String message)
         {
             fKillTime = time;
             SocketMessage sm = new SocketMessage("CHATINFO");
@@ -97,16 +139,19 @@ namespace Skylabs.oserver
         {
             endIt = true;
         }
+
         public static void RegisterHandlers()
         {
             ConsoleEventLog.eAddEvent += new ConsoleEventLog.EventEventDelegate(eLog_eAddEvent);
             ConsoleReader.eConsoleInput += new ConsoleReader.ConsoleInputDelegate(ConsoleReader_eConsoleInput);
         }
+
         public static void UnregisterHandlers()
         {
             ConsoleEventLog.eAddEvent -= eLog_eAddEvent;
             ConsoleReader.eConsoleInput -= ConsoleReader_eConsoleInput;
         }
+
         private static void ConsoleReader_eConsoleInput(ConsoleMessage input)
         {
             switch (input.Header)
@@ -125,13 +170,14 @@ namespace Skylabs.oserver
                     new ConsoleEvent(ret).writeEvent(true);
                     break;
                 case "ircchangenick":
-                    IrcBot.ChatAsUser(input.Args[0].Argument,"");
+                    IrcBot.ChatAsUser(input.Args[0].Argument, "");
                     break;
                 default:
                     new ConsoleEventError("Invalid command '" + input.RawData + "'.", new Exception("Invalid console command.")).writeEvent(true);
                     break;
             }
         }
+
         private static void eLog_eAddEvent(ConsoleEvent e)
         {
             ConsoleEventLog.SerializeEvents(RootPath + "elog.xml");
@@ -150,6 +196,7 @@ namespace Skylabs.oserver
             }
             return ret;
         }
+
         public static String getCurRevision()
         {
             String s = "";
@@ -163,6 +210,7 @@ namespace Skylabs.oserver
             }
             return s;
         }
+
         public static String getDailyMessage()
         {
             String s = "";
@@ -176,9 +224,10 @@ namespace Skylabs.oserver
             }
             return s;
         }
+
         public static Boolean LoadProperties()
-		{
-			Properties = new XmlDocument();
+        {
+            Properties = new XmlDocument();
             Boolean ret = true;
             FileStream f = null;
             try
@@ -194,9 +243,7 @@ namespace Skylabs.oserver
                 new ConsoleEventError("Could not load the settings file.", ex).writeEvent(true);
                 ret = false;
             }
-			return ret;
-
-		}
-	}
+            return ret;
+        }
+    }
 }
-
