@@ -27,13 +27,22 @@ namespace Skylabs
         private static StreamReader reader;
         private static TcpClient irc;
         private static NetworkStream stream;
-        private static String[] Users;
+
+        public static String[] Users
+        {
+            get
+            {
+                return _users;
+            }
+        }
+
+        private static String[] _users;
 
         public static void Start()
         {
             run = true;
             irc = null;
-            Users = new String[0];
+            _users = new String[0];
             try
             {
                 irc = new TcpClient(SERVER, PORT);
@@ -112,8 +121,9 @@ namespace Skylabs
             Regex rquit = new Regex("\\:([^!]+){1}![^ ]+ QUIT", RegexOptions.IgnoreCase);
             Regex rjoin = new Regex("\\:([^!]+){1}![^ ]+ JOIN", RegexOptions.IgnoreCase);
             Regex rpmess = new Regex("\\:([^!]+){1}![^ ]+ PRIVMSG ([^ #]+){1} \\:(.+)", RegexOptions.IgnoreCase);
+            Regex rpolist = new Regex(":.+353.+:(.+)+", RegexOptions.IgnoreCase);
             //353 OctgnwLobby = #OCTGN :
-            line = line.Replace(":helios.ircstorm.net", "");
+            //line = line.Replace(":helios.ircstorm.net", "");
             line = line.Trim();
             try
             {
@@ -151,9 +161,9 @@ namespace Skylabs
                     {
                         if (UserOnline(user))
                         {
-                            String[] temp = new String[Users.Length - 1];
+                            String[] temp = new String[_users.Length - 1];
                             int i = 0;
-                            foreach (String u in Users)
+                            foreach (String u in _users)
                             {
                                 if (!u.Equals(user))
                                 {
@@ -161,9 +171,9 @@ namespace Skylabs
                                     i++;
                                 }
                             }
-                            Users = temp;
-                            SocketMessage sm = new SocketMessage("CHATINFO");
-                            sm.Arguments.Add("IRC User " + user + " offline.");
+                            _users = temp;
+                            SocketMessage sm = new SocketMessage("USEROFFLINE");
+                            sm.Arguments.Add(user + "@irc.irc");
                             ClientContainer.AllUserCommand(sm);
                         }
                     }
@@ -173,17 +183,23 @@ namespace Skylabs
                     // Make sure that user isn't online first
                     Match m = rjoin.Match(line);
                     String user = m.Groups[1].Value;
-                    Array.Resize<String>(ref Users, Users.Length + 1);
-                    Users[Users.Length - 1] = user;
-                    SocketMessage sm = new SocketMessage("CHATINFO");
-                    sm.Arguments.Add("IRC User " + user + " online.");
+                    Array.Resize<String>(ref _users, _users.Length + 1);
+                    _users[_users.Length - 1] = user;
+
+                    SocketMessage sm = new SocketMessage("USERONLINE");
+                    sm.Arguments.Add(user + "@irc.irc" + ":<irc>" + user);
                     ClientContainer.AllUserCommand(sm);
+
+                    //SocketMessage sm = new SocketMessage("CHATINFO");
+                    //sm.Arguments.Add("IRC User " + user + " online.");
+                    //ClientContainer.AllUserCommand(sm);
                 }
-                else if (line.Substring(0, 3).Equals(353))
+                else if (rpolist.IsMatch(line))
                 {
-                    int i = line.IndexOf(':');
-                    string strusers = line.Substring(i);
-                    Users = strusers.Split(new char[1] { ' ' });
+                    Match m = rpolist.Match(line);
+                    String strusers = m.Groups[1].Value;
+
+                    _users = strusers.Split(new char[1] { ' ' });
                     //ConsoleWriter.writeLine("#IRC-IN: " + line, true);
                 }
                 else if (line.Substring(0, 4).Equals("PING"))
@@ -205,7 +221,7 @@ namespace Skylabs
         {
             if (user != null)
             {
-                foreach (String u in Users)
+                foreach (String u in _users)
                 {
                     if (u.Equals(user))
                         return true;

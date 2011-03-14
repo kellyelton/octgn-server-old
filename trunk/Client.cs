@@ -150,6 +150,16 @@ namespace Skylabs.oserver
                             sb.Append(listOnlineUsers[i].Status.ToString());
                             sm.Arguments.Add(sb.ToString());
                         }
+                        foreach (String user in IrcBot.Users)
+                        {
+                            sb = new StringBuilder();
+                            sb.Append(user + "@irc.irc");
+                            sb.Append(':');
+                            sb.Append("<irc>" + user);
+                            sb.Append(':');
+                            sb.Append(UserStatus.Available.ToString());
+                            sm.Arguments.Add(sb.ToString());
+                        }
                         writeMessage(sm);
                         break;
                     case "LOBCHAT":
@@ -212,7 +222,7 @@ namespace Skylabs.oserver
                                 stemp3.Arguments.Add(hg.ID.ToString());
                                 //IP
 #if(DEBUG)
-                            stemp3.Arguments.Add("localhost");
+                                stemp3.Arguments.Add("localhost");
 #else
                                 stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
 #endif
