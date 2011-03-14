@@ -56,7 +56,7 @@ namespace Skylabs.oserver
                 return;
             }
             IrcBot.Start();
-            TimeSpan timebetweenads = new TimeSpan(0, 0, 15);
+            TimeSpan timebetweenads = new TimeSpan(0, 5, 0);
             TimeSpan curTimeSpan = new TimeSpan(0);
             DateTime dtLastSent = DateTime.Now;
             while (endIt == false)
