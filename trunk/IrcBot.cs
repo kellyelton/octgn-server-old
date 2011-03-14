@@ -13,8 +13,13 @@ namespace Skylabs
     {
         private static string SERVER = "irc.ircstorm.net";
         private static int PORT = 6667;
+#if(!DEBUG)
         private static string USER = "USER OctgnwLobby OctgnwLobby irc.ircstorm.net :OctgnwLobby";
         private static string NICK = "OctgnwLobby";
+#else
+        private static string USER = "USER OctgnwLobby_DEBUG OctgnwLobby_DEBUG irc.ircstorm.net :OctgnwLobby_DEBUG";
+        private static string NICK = "OctgnwLobby_DEBUG";
+#endif
         private static string CHANNEL = "#octgn";
         private static Boolean run;
         private static Thread thread;
