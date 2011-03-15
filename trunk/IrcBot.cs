@@ -41,71 +41,82 @@ namespace Skylabs
         public static void Start()
         {
             run = true;
-            irc = null;
-            _users = new String[0];
-            try
-            {
-                irc = new TcpClient(SERVER, PORT);
-                irc.Client.Blocking = true;
-            }
-            catch (Exception e)
-            {
-                ConsoleEventLog.addEvent(new ConsoleEventError("Irc Connect Error: ", e), true);
-            }
             thread = new Thread(new ThreadStart(Run));
             thread.Start();
         }
 
         private static void Run()
         {
-            string inputLine = "";
-            irc.Client.ReceiveTimeout = 500;
-            stream = irc.GetStream();
-            reader = new StreamReader(stream);
-            writer = new StreamWriter(stream);
-            writer.WriteLine(USER);
-            writer.Flush();
-            writer.WriteLine("NICK " + NICK);
-            writer.Flush();
-
             while (run)
             {
+                irc = null;
+                _users = new String[0];
                 try
                 {
-                    while ((inputLine = reader.ReadLine()) != null)
-                    {
-                        HandleLine(inputLine);
-                    }
-                    Thread.Sleep(1000);
+                    irc = new TcpClient(SERVER, PORT);
+                    irc.Client.Blocking = true;
                 }
-                catch (SocketException se)
+                catch (Exception e)
                 {
-                    if (se.SocketErrorCode != SocketError.TimedOut)
-                    {
-                        ConsoleEventLog.addEvent(new ConsoleEventError("Irc SocketException", se), true);
-                        //break;
-                    }
-                    Thread.Sleep(1000);
+                    ConsoleEventLog.addEvent(new ConsoleEventError("Irc Connect Error: ", e), true);
+                    continue;
                 }
-                catch (IOException e)
-                {
-                    SocketException se = e.InnerException as SocketException;
-                    if (se == null)
-                        ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
-                    else
-                    {
-                        if (se.SocketErrorCode != SocketError.WouldBlock)
-                            ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
-                    }
-                    Thread.Sleep(1000);
-                    //break;
-                }
-                // Close all streams
-            }
+                string inputLine = "";
+                irc.Client.ReceiveTimeout = 500;
+                stream = irc.GetStream();
+                reader = new StreamReader(stream);
+                writer = new StreamWriter(stream);
+                writer.WriteLine(USER);
+                writer.Flush();
+                writer.WriteLine("NICK " + NICK);
+                writer.Flush();
 
-            writer.Close();
-            reader.Close();
-            irc.Close();
+                while (irc.Connected)
+                {
+                    try
+                    {
+                        inputLine = reader.ReadLine();
+                        while (inputLine != null)
+                        {
+                            HandleLine(inputLine);
+                            inputLine = reader.ReadLine();
+                        }
+                        Thread.Sleep(1000);
+                    }
+                    catch (SocketException se)
+                    {
+                        if (se.SocketErrorCode != SocketError.TimedOut)
+                        {
+                            ConsoleEventLog.addEvent(new ConsoleEventError("Irc SocketException", se), true);
+                            break;
+                        }
+                        Thread.Sleep(1000);
+                    }
+                    catch (IOException e)
+                    {
+                        SocketException se = e.InnerException as SocketException;
+                        if (se == null)
+                            ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
+                        else
+                        {
+                            if (se.SocketErrorCode != SocketError.WouldBlock)
+                                ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
+                        }
+                        Thread.Sleep(1000);
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        ConsoleEventLog.addEvent(new ConsoleEventError("Irc Exception", e), true);
+                        break;
+                    }
+                    // Close all streams
+                }
+
+                writer.Close();
+                reader.Close();
+                irc.Close();
+            }
         }
 
         public static void Stop()
