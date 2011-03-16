@@ -71,7 +71,8 @@ namespace Skylabs
                 writer.WriteLine("NICK " + NICK);
                 writer.Flush();
 
-                while (irc.Connected)
+                int ii = 0;
+                while (ii == 0)
                 {
                     try
                     {
@@ -96,14 +97,22 @@ namespace Skylabs
                     {
                         SocketException se = e.InnerException as SocketException;
                         if (se == null)
+                        {
                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
+                            break;
+                        }
                         else
                         {
                             if (se.SocketErrorCode != SocketError.WouldBlock)
-                                ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
+                            {
+                                if (se.SocketErrorCode != SocketError.TimedOut)
+                                {
+                                    ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
+                                    break;
+                                }
+                            }
                         }
                         Thread.Sleep(1000);
-                        break;
                     }
                     catch (Exception e)
                     {
