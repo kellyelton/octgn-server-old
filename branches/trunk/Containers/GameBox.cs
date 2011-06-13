@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Skylabs.ConsoleHelper;
 using System.Collections;
+using Skylabs.ConsoleHelper;
 
 namespace Skylabs.Containers
 {
@@ -29,7 +26,7 @@ namespace Skylabs.Containers
 
         private static ArrayList _Games = new ArrayList();
 
-        public HostedGame this[int index] 
+        public HostedGame this[int index]
         {
             get
             {
@@ -50,9 +47,10 @@ namespace Skylabs.Containers
             Guid G = new Guid(h.GUID);
             int port = 6000 + i;
             ConsoleEventLog.addEvent(new ConsoleEvent("#Starting server on port " + port.ToString()), true);
-            h.Server = new Octgn.Server.Server(port, false, G, V);
+            //h.Server = new Octgn.Server.Server(port, false, G, V);
             return i;
         }
+
         public static String RemoveByUID(int UID)
         {
             int ret = -1;
@@ -71,17 +69,6 @@ namespace Skylabs.Containers
                 else
                 {
                     int deadCount = 0;
-                    foreach(Octgn.Server.Server.Connection c in g.Server.clients)
-                    {
-                        
-                        if(c.disposed)
-                            deadCount++;
-                    }
-                    if (deadCount == g.Server.clients.Count)
-                    {
-                        g.Server.Stop();
-                        //Games.RemoveAt(i);
-                    }
                 }
             }
             return sret;

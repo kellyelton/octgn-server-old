@@ -3,7 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="currevision" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.0.1.10</Value>
+      <Value Profile="(Default)">2.0.0.0</Value>
+    </Setting>
+    <Setting Name="RootFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">/var/oserver2.0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

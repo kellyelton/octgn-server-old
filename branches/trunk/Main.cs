@@ -21,29 +21,21 @@ namespace Skylabs.oserver
 
         private static bool endIt = false;
         private static int fKillTime = -1;
-#if(DEBUG)
         public static String RootPath = "";
-#else
-        public static String RootPath = "/var/oserver/";
-#endif
 
         public static void Main(string[] args)
         {
             //Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
-            ConsoleWriter.CommandText = "O-Lobby: ";
-            //ConsoleWriter.CommandTextColor = ConsoleColor.White;
-            //ConsoleWriter.OutputColor = ConsoleColor.Gray;
-            //ConsoleReader.InputColor = ConsoleColor.Yellow;
             ConsoleReader.Start();
+            ConsoleWriter.CommandText = "O-Lobby: ";
+            RootPath = System.IO.Directory.GetCurrentDirectory();
             if (!LoadProperties())
                 return;
             ConsoleWriter.writeCT();
-
-            String host = Properties.GetElementsByTagName("BindInt").Item(0).InnerText;
-            String sport = Properties.GetElementsByTagName("BindPort").Item(0).InnerText;
+            String host = getProperty("BindInt");
+            String sport = getProperty("BindPort");
             int port = int.Parse(sport);
-
             try
             {
                 Server = new Listener(host, port);
@@ -55,7 +47,7 @@ namespace Skylabs.oserver
                 Stop();
                 return;
             }
-            IrcBot.Start();
+            //IrcBot.Start();
             TimeSpan timebetweenads = new TimeSpan(0, 5, 0);
             TimeSpan curTimeSpan = new TimeSpan(0);
             DateTime dtLastSent = DateTime.Now;
@@ -101,7 +93,7 @@ namespace Skylabs.oserver
 
                 Thread.Sleep(1000);
             }
-            IrcBot.Stop();
+            //IrcBot.Stop();
             new ConsoleEvent("Quitting...").writeEvent(true);
             //ClientContainer.AllUserCommand(new NetShit.EndMessage());
             foreach (Client c in ClientContainer.Clients)
@@ -110,7 +102,7 @@ namespace Skylabs.oserver
             }
             foreach (HostedGame h in GameBox.Games)
             {
-                h.Server.Stop();
+                //h.Server.Stop();
             }
             Server.Stop();
 
@@ -232,7 +224,11 @@ namespace Skylabs.oserver
             FileStream f = null;
             try
             {
+#if(DEBUG)
+                f = File.Open(RootPath + "ServerOptions-Debug.xml", FileMode.Open);
+#else
                 f = File.Open(RootPath + "ServerOptions.xml", FileMode.Open);
+#endif
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
             }

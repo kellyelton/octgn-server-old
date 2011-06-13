@@ -93,10 +93,6 @@
       <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
       <Name>NetShit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\octgnsvn\octgnFX\Octgn.Server\Octgn.Server.csproj">
-      <Project>{6DD203AF-5003-4AF3-A982-67F10B704D4A}</Project>
-      <Name>Octgn.Server</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -115,12 +111,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ServerOptions.xml">
+    <None Include="ServerOptions-Debug.xml">
       <DeployService-Deploy>true</DeployService-Deploy>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ServerOptions.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="currevision.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

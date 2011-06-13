@@ -7,8 +7,8 @@ YYYYMMDD=`date +%Y%m%d`
 # CHANGE THESE
 TOEMAIL="7015807400@vtext.com";
 FREMAIL="root";
-SUBJECT="Server stopped.";
-MSGBODY="Server stopped for some reason";
+SUBJECT="Server2.0 stopped.";
+MSGBODY="Server2.0 stopped for some reason";
 
 # DON'T CHANGE ANYTHING BELOW
 TMP="/tmp/tmpfil_123"$RANDOM;
