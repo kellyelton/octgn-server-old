@@ -1,0 +1,24 @@
+Welcome to the OCTGN Lobby.
+type /w username message to whisper someone
+type /r message to reply back to a previous whisper
+type /i to send a message to the irc chat
+type /away to set yourself as away
+Click a user's name to whisper them
+
+View the latest update information here http://www.skylabsonline.com/blog/2011/03/05/octgn-update-1-0-1-0/
+
+Have fun!
+Please report all bugs to http://www.skylabsonline.com/bugzilla3/
+
+Follow development on Twitter http://twitter.com/SkylabsOnline
+
+Get Involved!
+-------------------------------
+Feature Request: http://www.skylabsonline.com/blog/2011/02/23/octgn-ideas/
+Idea's and proposals for Lobby moderation: http://www.skylabsonline.com/blog/2011/02/21/octgn-moderators/
+Idea's and proposals for Legal Game Types: http://www.skylabsonline.com/blog/project/octgn-w-lobby/issue/legal-types-for-games/
+-------------------------------
+
+Also!!!
+Check out the OCTGN Customizer!
+http://www.skylabsonline.com/blog/project/octgn-customizer/
