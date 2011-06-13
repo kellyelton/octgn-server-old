@@ -22,6 +22,43 @@ namespace Skylabs.oserver
         private static bool endIt = false;
         private static int fKillTime = -1;
         public static String RootPath = "";
+        private static TimeSpan timebetweenads = new TimeSpan(0, 5, 0);
+
+        public static void WriteAd(TimeSpan lastAd)
+        {
+            return;
+            if (lastAd >= timebetweenads)
+            {
+                WebClient wc = new WebClient();
+                try
+                {
+                    Uri u = new Uri("http://www.qksz.net/1e-jror");
+
+                    String ad = @wc.DownloadString(u);
+                    ad = ad.Replace("\\\\\\", "\\");
+                    Regex r = new Regex("^document\\.write\\(\"(.+)+\"\\);$");
+                    Match m = r.Match(ad);
+                    if (m.Groups.Count >= 2)
+                    {
+                        String fullhtml = m.Groups[1].Value;
+                        //ConsoleWriter.writeLine(fullhtml, true);
+                        String xaml = HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
+                        if (!xaml.Trim().Equals(""))
+                        {
+                            SocketMessage sm = new SocketMessage("XAMLCHAT");
+                            sm.Arguments.Add("SUPPORT");
+                            sm.Arguments.Add(xaml);
+                            ClientContainer.AllUserCommand(sm);
+                        }
+                        //ConsoleWriter.writeLine(xaml, true);
+                    }
+                    //ConsoleWriter.writeLine(evalstring, true);
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
 
         public static void Main(string[] args)
         {
@@ -48,49 +85,12 @@ namespace Skylabs.oserver
                 return;
             }
             //IrcBot.Start();
-            TimeSpan timebetweenads = new TimeSpan(0, 5, 0);
-            TimeSpan curTimeSpan = new TimeSpan(0);
-            DateTime dtLastSent = DateTime.Now;
             while (endIt == false)
             {
-                curTimeSpan = new TimeSpan(DateTime.Now.Ticks - dtLastSent.Ticks);
-                if (curTimeSpan >= timebetweenads)
-                {
-                    WebClient wc = new WebClient();
-                    try
-                    {
-                        Uri u = new Uri("http://www.qksz.net/1e-jror");
-
-                        String ad = @wc.DownloadString(u);
-                        ad = ad.Replace("\\\\\\", "\\");
-                        Regex r = new Regex("^document\\.write\\(\"(.+)+\"\\);$");
-                        Match m = r.Match(ad);
-                        if (m.Groups.Count >= 2)
-                        {
-                            String fullhtml = m.Groups[1].Value;
-                            //ConsoleWriter.writeLine(fullhtml, true);
-                            String xaml = HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
-                            if (!xaml.Trim().Equals(""))
-                            {
-                                SocketMessage sm = new SocketMessage("XAMLCHAT");
-                                sm.Arguments.Add("SUPPORT");
-                                sm.Arguments.Add(xaml);
-                                ClientContainer.AllUserCommand(sm);
-                            }
-                            //ConsoleWriter.writeLine(xaml, true);
-                        }
-                        //ConsoleWriter.writeLine(evalstring, true);
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    dtLastSent = DateTime.Now;
-                }
                 if (fKillTime == 0)
                     break;
                 if (fKillTime > 0)
                     fKillTime -= 1;
-
                 Thread.Sleep(1000);
             }
             //IrcBot.Stop();
@@ -172,7 +172,7 @@ namespace Skylabs.oserver
 
         private static void eLog_eAddEvent(ConsoleEvent e)
         {
-            ConsoleEventLog.SerializeEvents(RootPath + "elog.xml");
+            ConsoleEventLog.SerializeEvents(Path.Combine(RootPath, "elog.xml"));
         }
 
         public static String getProperty(String ID)
@@ -194,7 +194,7 @@ namespace Skylabs.oserver
             String s = "";
             try
             {
-                s = System.IO.File.ReadAllText(RootPath + "currevision.txt");
+                s = System.IO.File.ReadAllText(Path.Combine(RootPath, "currevision.txt"));
             }
             catch (Exception e)
             {
@@ -208,7 +208,7 @@ namespace Skylabs.oserver
             String s = "";
             try
             {
-                s = System.IO.File.ReadAllText(RootPath + getProperty("DailyMessage"));
+                s = System.IO.File.ReadAllText(Path.Combine(RootPath, getProperty("DailyMessage")));
             }
             catch (Exception e)
             {
@@ -225,9 +225,9 @@ namespace Skylabs.oserver
             try
             {
 #if(DEBUG)
-                f = File.Open(RootPath + "ServerOptions-Debug.xml", FileMode.Open);
+                f = File.Open(Path.Combine(RootPath, "ServerOptions-Debug.xml"), FileMode.Open);
 #else
-                f = File.Open(RootPath + "ServerOptions.xml", FileMode.Open);
+                f = File.Open(Path.Combine(RootPath , "ServerOptions.xml"), FileMode.Open);
 #endif
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
