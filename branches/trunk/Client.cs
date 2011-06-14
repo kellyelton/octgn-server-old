@@ -23,12 +23,12 @@ namespace Skylabs.oserver
         private User _User = new User();
         private Boolean isRc = false;
 
-        override public void handleError(Exception e, String error)
+        override public void handleError(ShitSock me, Exception e, String error)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError(error, e), true);
         }
 
-        override public void handleInput(SocketMessage input)
+        override public void handleInput(ShitSock me, SocketMessage input)
         {
             if (!LoggedIn)
             {
@@ -291,12 +291,12 @@ namespace Skylabs.oserver
             }
         }
 
-        override public void handleConnect(String host, int port)
+        override public void handleConnect(ShitSock me, String host, int port)
         {
             ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " connected."), true);
         }
 
-        override public void handleDisconnect(String reason, String host, int port)
+        override public void handleDisconnect(ShitSock me, String reason, String host, int port)
         {
             if (!NotifiedLoggedOff)
             {
