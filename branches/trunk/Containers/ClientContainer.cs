@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Skylabs.NetShit;
-using Skylabs.Containers;
 
 namespace Skylabs.oserver.Containers
 {
@@ -11,9 +8,10 @@ namespace Skylabs.oserver.Containers
     {
         LogIn, LogOut
     };
+
     public class ClientContainer
     {
-        public static List<Client> Clients 
+        public static List<Client> Clients
         {
             get
             {
@@ -39,18 +37,28 @@ namespace Skylabs.oserver.Containers
             Clients.Add(c);
             int i = Clients.IndexOf(c);
             Clients[i].ID = i;
+            for (i = 0; i < Clients.Count; ++i)
+            {
+                if (!Clients[i].Connected)
+                {
+                    Clients.RemoveAt(i);
+                    i--;
+                }
+            }
         }
+
         public static void AllUserCommand(SocketMessage command)
         {
             int intcount = Clients.Count;
-            for(int i=0;i<intcount;i++)
+            for (int i = 0; i < intcount; i++)
             {
-                if(Clients[i].Connected)
+                if (Clients[i].Connected)
                 {
                     Clients[i].writeMessage(command);
                 }
             }
         }
+
         public static void UserEvent(UserEventType ue, Client c)
         {
             SocketMessage sm;
@@ -60,12 +68,12 @@ namespace Skylabs.oserver.Containers
                     sm = new SocketMessage("USERONLINE");
                     sm.Arguments.Add(c.User.Email + ":" + c.User.Username);
                     AllUserCommand(sm);
-                break;
+                    break;
                 case Containers.UserEventType.LogOut:
                     sm = new SocketMessage("USEROFFLINE");
                     sm.Arguments.Add(c.User.Email);
                     AllUserCommand(sm);
-                break;
+                    break;
             }
         }
 
@@ -81,40 +89,41 @@ namespace Skylabs.oserver.Containers
             }
             return new Client();
         }
+
         public static void LobbyChat(String user, String chat)
         {
-    	    if(chat.Substring(0,1).Equals("/"))
-    	    {
-    		    int sp = chat.IndexOf(' ');
-    		    String command = "";
-    		    if(sp == -1)
-    			    command = chat.Substring(1);
-    		    else
-    			    command =chat.Substring(1,sp-1);
-    		    chat = chat.Substring(sp+1);
-    		    if(command.ToLower().Equals("w"))
-    		    {
-    			    String to;
-    			    sp = chat.IndexOf(' ');
-        		    if(sp != -1)
-        		    {
-                        to = chat.Substring(0,sp);
-        			    chat = chat.Substring(sp+1);
-    	        	    Client c = getClientFromUserName(to);
-    	        	    Client from = getClientFromUserName(user);
-    	        	    if(!c.User.Email.Equals("") && c.Connected)
-    	        	    {
-    	        		    SocketMessage sm = new SocketMessage("LOBW");
-    	        		    sm.Arguments.Add(user + ":" + to);
-    	        		    sm.Arguments.Add(chat);
-    	        		    c.writeMessage(sm);
-    	        		    from.writeMessage(sm);
-    	        	    }
-    	        	    else
-    	        	    {
+            if (chat.Substring(0, 1).Equals("/"))
+            {
+                int sp = chat.IndexOf(' ');
+                String command = "";
+                if (sp == -1)
+                    command = chat.Substring(1);
+                else
+                    command = chat.Substring(1, sp - 1);
+                chat = chat.Substring(sp + 1);
+                if (command.ToLower().Equals("w"))
+                {
+                    String to;
+                    sp = chat.IndexOf(' ');
+                    if (sp != -1)
+                    {
+                        to = chat.Substring(0, sp);
+                        chat = chat.Substring(sp + 1);
+                        Client c = getClientFromUserName(to);
+                        Client from = getClientFromUserName(user);
+                        if (!c.User.Email.Equals("") && c.Connected)
+                        {
+                            SocketMessage sm = new SocketMessage("LOBW");
+                            sm.Arguments.Add(user + ":" + to);
+                            sm.Arguments.Add(chat);
+                            c.writeMessage(sm);
+                            from.writeMessage(sm);
+                        }
+                        else
+                        {
                             if (to.Substring(0, 5).ToLower().Equals("<irc>"))
                             {
-                                IrcBot.PMUser(to.Substring(5),from.User.Username, chat);
+                                IrcBot.PMUser(to.Substring(5), from.User.Username, chat);
                             }
                             else
                             {
@@ -122,10 +131,9 @@ namespace Skylabs.oserver.Containers
                                 sm.Arguments.Add("User '" + to + "' not online.");
                                 from.writeMessage(sm);
                             }
-    	        	    }
-        		    }
-        		
-    		    }
+                        }
+                    }
+                }
                 else if (command.Equals("i"))
                 {
                     SocketMessage sm = new SocketMessage("LOBCHAT");
@@ -142,13 +150,13 @@ namespace Skylabs.oserver.Containers
                 }
                 else if (command.Equals("?"))
                 {
-    			    String ch = "";
+                    String ch = "";
                     ch += "Lobby chat help\n";
-    			    ch += "-----------------------------------------------------------\n";
-    			    ch += "\\?\n";
-    			    ch += "--This menu.\n";
-    			    ch += "\\w user message\n";
-    			    ch += "--Sends the 'user' 'message'\n";
+                    ch += "-----------------------------------------------------------\n";
+                    ch += "\\?\n";
+                    ch += "--This menu.\n";
+                    ch += "\\w user message\n";
+                    ch += "--Sends the 'user' 'message'\n";
                     ch += "\\r message\n";
                     ch += "--Replies to the last received whisper 'message'\n";
                     ch += "\\i message\n";
@@ -157,12 +165,12 @@ namespace Skylabs.oserver.Containers
                     SocketMessage sm = new SocketMessage("CHATINFO");
                     sm.Arguments.Add(ch);
                     Client c = ClientContainer.getClientFromUserName(user);
-                    if(c!= null)
+                    if (c != null)
                     {
-                     if(c.Connected && c.LoggedIn)   
-                         c.writeMessage(sm);
+                        if (c.Connected && c.LoggedIn)
+                            c.writeMessage(sm);
                     }
-    			    //from.writeLine(ch);
+                    //from.writeLine(ch);
                 }
                 else
                 {
@@ -171,15 +179,16 @@ namespace Skylabs.oserver.Containers
                     sm.Arguments.Add(chat);
                     AllUserCommand(sm);
                 }
-    	    }
-    	    else
-    	    {
-			    SocketMessage sm =new SocketMessage("LOBCHAT");
-			    sm.Arguments.Add(user);
-			    sm.Arguments.Add(chat);
-			    AllUserCommand(sm);
-    	    }
+            }
+            else
+            {
+                SocketMessage sm = new SocketMessage("LOBCHAT");
+                sm.Arguments.Add(user);
+                sm.Arguments.Add(chat);
+                AllUserCommand(sm);
+            }
         }
+
         public static Client getClientFromUserName(String u)
         {
             for (int i = 0; i < Clients.Count; i++)
@@ -192,6 +201,7 @@ namespace Skylabs.oserver.Containers
             }
             return new Client();
         }
+
         public static List<User> getOnlineUserList()
         {
             List<User> ret = new List<User>();
