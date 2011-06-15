@@ -123,7 +123,7 @@ namespace Skylabs.oserver.Containers
                         {
                             if (to.Substring(0, 5).ToLower().Equals("<irc>"))
                             {
-                                IrcBot.PMUser(to.Substring(5), from.User.Username, chat);
+                                // IrcBot.PMUser(to.Substring(5), from.User.Username, chat);
                             }
                             else
                             {
@@ -142,11 +142,11 @@ namespace Skylabs.oserver.Containers
                     AllUserCommand(sm);
                     if (user.Length > 5)
                     {
-                        if (!user.Substring(0, 5).Equals("<irc>"))
-                            IrcBot.ChatAsUser(user, chat);
+                        //if (!user.Substring(0, 5).Equals("<irc>"))
+                        //IrcBot.ChatAsUser(user, chat);
                     }
-                    else
-                        IrcBot.ChatAsUser(user, chat);
+                    //else
+                    //IrcBot.ChatAsUser(user, chat);
                 }
                 else if (command.Equals("?"))
                 {

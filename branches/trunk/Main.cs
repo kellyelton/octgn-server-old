@@ -162,7 +162,7 @@ namespace Skylabs.oserver
                     new ConsoleEvent(ret).writeEvent(true);
                     break;
                 case "ircchangenick":
-                    IrcBot.ChatAsUser(input.Args[0].Argument, "");
+                    //IrcBot.ChatAsUser(input.Args[0].Argument, "");
                     break;
                 default:
                     new ConsoleEventError("Invalid command '" + input.RawData + "'.", new Exception("Invalid console command.")).writeEvent(true);

@@ -12,24 +12,15 @@ namespace Skylabs
 
         public String Name { get; set; }
 
-        public String GUID { get; set; }
-
-        public String GameName { get; set; }
-
-        public String GameVersion { get; set; }
-
-        public String Password { get; set; }
-
         public Boolean Available { get; set; }
 
-        public HostedGame(int uid, String name, String guid, String gamename, String gameversion, String password)
+        public String Description { get; set; }
+
+        public HostedGame(int uid, String name, String description)
         {
             UID = uid;
             Name = name;
-            GUID = guid;
-            GameName = gamename;
-            GameVersion = gameversion;
-            Password = password;
+            Description = description;
             Available = true;
         }
     }

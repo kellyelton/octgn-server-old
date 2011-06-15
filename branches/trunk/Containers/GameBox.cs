@@ -43,10 +43,7 @@ namespace Skylabs.Containers
             int i = Games.Add(game);
             HostedGame h = (HostedGame)Games[i];
             h.ID = i;
-            Version V = new Version(h.GameVersion);
-            Guid G = new Guid(h.GUID);
-            int port = 6000 + i;
-            ConsoleEventLog.addEvent(new ConsoleEvent("#Starting server on port " + port.ToString()), true);
+            ConsoleEventLog.addEvent(new ConsoleEvent("#Hosting game: ", game.Name + ": " + game.Description), true);
             //h.Server = new Octgn.Server.Server(port, false, G, V);
             return i;
         }

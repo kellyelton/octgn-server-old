@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Text;
 using System.Threading;
 using Skylabs.ConsoleHelper;
@@ -150,6 +149,7 @@ namespace Skylabs.oserver
                             sb.Append(listOnlineUsers[i].Status.ToString());
                             sm.Arguments.Add(sb.ToString());
                         }
+                        /*
                         foreach (String user in IrcBot.Users)
                         {
                             sb = new StringBuilder();
@@ -160,34 +160,20 @@ namespace Skylabs.oserver
                             sb.Append(UserStatus.Available.ToString());
                             sm.Arguments.Add(sb.ToString());
                         }
+                         */
                         writeMessage(sm);
                         break;
                     case "LOBCHAT":
                         ClientContainer.LobbyChat(User.Username, input.Arguments[0].Trim());
                         break;
                     case "HOST":
-                        String[] ips = input.Arguments[0].Split(new char[1] { '?' });
-                        HostedGame h = new HostedGame(User.UID, input.Arguments[3], input.Arguments[1], input.Arguments[0], input.Arguments[2], "");
+                        HostedGame h = new HostedGame(User.UID, input.Arguments[0], input.Arguments[1]);
                         int gID = GameBox.AddGame(h);
                         SocketMessage stemp = input;
                         stemp.Arguments.Add(this.User.Username);
                         stemp.Arguments.Add(gID.ToString());
-#if(DEBUG)
-                        stemp.Arguments.Add("localhost");
-                        IPAddress[] addresslist = Dns.GetHostAddresses("localhost");
-#else
-                        stemp.Arguments.Add(MainClass.getProperty("OusideHost"));
-                        IPAddress[] addresslist = Dns.GetHostAddresses(MainClass.getProperty("OusideHost"));
-#endif
-                        int port = (gID + 6000);
-                        stemp.Arguments.Add(port.ToString());
-                        ClientContainer.AllUserCommand(stemp);
 
-                        IrcBot.GeneralChat(this.User.Username + " is hosting a " + h.GameName + " game at " + addresslist[0].ToString() + ":" + port.ToString() + " :" + h.Name);
-                        foreach (IPAddress theaddress in addresslist)
-                        {
-                            Console.WriteLine(theaddress.ToString());
-                        }
+                        ClientContainer.AllUserCommand(stemp);
                         break;
                     case "UNHOST":
                         string ret = GameBox.RemoveByUID(User.UID);
@@ -215,34 +201,14 @@ namespace Skylabs.oserver
                             if (hg.Available)
                             {
                                 SocketMessage stemp3 = new SocketMessage("GAMELIST");
-
-                                //Game list
-                                //GID,IP,Port,GameName,GUID,GameVersion,Username,Name
-                                //GID
+                                //GameID
                                 stemp3.Arguments.Add(hg.ID.ToString());
-                                //IP
-#if(DEBUG)
-                                stemp3.Arguments.Add("localhost");
-#else
-                                stemp3.Arguments.Add(MainClass.getProperty("OusideHost"));
-#endif
-                                //Port
-                                port = (hg.ID + 6000);
-                                stemp3.Arguments.Add(port.ToString());
+                                //UserEmail
+                                stemp3.Arguments.Add(ClientContainer.getClientFromUID(hg.UID).User.Email);
                                 //GameName
-                                stemp3.Arguments.Add(hg.GameName);
-                                //GUID
-                                stemp3.Arguments.Add(hg.GUID);
-                                //GameVersion
-                                stemp3.Arguments.Add(hg.GameVersion);
-
-                                int uid = hg.UID;
-                                Client cl = ClientContainer.getClientFromUID(uid);
-                                //Username
-                                stemp3.Arguments.Add(cl.User.Username);
-                                //Name
                                 stemp3.Arguments.Add(hg.Name);
-                                //Main.writeEvent("Sending GAMELIST: " + stemp3.getMessage());
+                                //Description
+                                stemp3.Arguments.Add(hg.Description);
                                 this.writeMessage(stemp3);
                             }
                         }

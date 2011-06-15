@@ -10,7 +10,7 @@ using Skylabs.oserver.Containers;
 
 namespace Skylabs
 {
-    public static class IrcBot
+    public static class IrcBot2
     {
         private static string SERVER = "irc.ircstorm.net";
         private static string SERVERNAME = "helios.ircstorm.net";
