@@ -22,12 +22,12 @@ namespace Skylabs.oserver
         private User _User = new User();
         private Boolean isRc = false;
 
-        override protected void handleError(ShitSock me, Exception e, String error)
+        override protected void handleError(object me, Exception e, String error)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError(error, e), true);
         }
 
-        override protected void handleInput(ShitSock me, SocketMessage input)
+        override protected void handleInput(object me, SocketMessage input)
         {
             if (!LoggedIn)
             {
@@ -46,7 +46,7 @@ namespace Skylabs.oserver
                                         if (ClientContainer.Clients[i].Connected)
                                         {
                                             ClientContainer.UserEvent(UserEventType.LogOut, ClientContainer.Clients[i]);
-                                            ClientContainer.Clients[i].Close("Another user logged in.", false);
+                                            ClientContainer.Clients[i].Close();
                                         }
                                     }
                                 }
@@ -68,7 +68,7 @@ namespace Skylabs.oserver
                                     sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
                                     ClientContainer.AllUserCommand(sm);
                                     Thread.Sleep(1000);
-                                    this.Close("Incompatable version.", true);
+                                    this.Close();
                                 }
                                 ));
                                 th.Start();
@@ -91,7 +91,7 @@ namespace Skylabs.oserver
                                             sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
                                             ClientContainer.AllUserCommand(sm);
                                             Thread.Sleep(1000);
-                                            this.Close("Incompatable version.", true);
+                                            this.Close();
                                         }
                                     ));
                                     th.Start();
@@ -149,18 +149,6 @@ namespace Skylabs.oserver
                             sb.Append(listOnlineUsers[i].Status.ToString());
                             sm.Arguments.Add(sb.ToString());
                         }
-                        /*
-                        foreach (String user in IrcBot.Users)
-                        {
-                            sb = new StringBuilder();
-                            sb.Append(user + "@irc.irc");
-                            sb.Append(':');
-                            sb.Append("<irc>" + user);
-                            sb.Append(':');
-                            sb.Append(UserStatus.Available.ToString());
-                            sm.Arguments.Add(sb.ToString());
-                        }
-                         */
                         writeMessage(sm);
                         break;
                     case "LOBCHAT":
@@ -213,6 +201,32 @@ namespace Skylabs.oserver
                             }
                         }
                         break;
+                    case "GAMEFORWARD":
+                        //Basically just forward the whole package to the Host, found by the game ID
+                        //which resides at Argument 0
+                        //Get the int
+                        try
+                        {
+                            int gid = int.Parse(input.Arguments[0]);
+                            if (gid < GameBox.Games.Count)
+                            {
+                                HostedGame hg = (HostedGame)GameBox.Games[gid];
+                                if (hg.Available)
+                                {
+                                    Client tclient = ClientContainer.getClientFromUID(hg.UID);
+                                    if (tclient != null)
+                                        tclient.writeMessage(input);
+#if DEBUG
+                                    else
+                                        System.Diagnostics.Debugger.Break();
+#endif
+                                }
+                            }
+                        }
+                        catch (FormatException fe)
+                        {
+                        }
+                        break;
                     default:
                         //TODO add ConsoleEvent to handle unknown input
                         //Main.writeEvent("Input from `" + super.strHost + "' :" + input.getMessage());
@@ -257,31 +271,33 @@ namespace Skylabs.oserver
             }
         }
 
-        override protected void handleConnect(ShitSock me, String host, int port)
+        override protected void handleConnectionEvent(object Sender, ConnectionEvent e)
         {
-            ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " connected."), true);
-        }
-
-        override protected void handleDisconnect(ShitSock me, String reason, String host, int port)
-        {
-            if (!NotifiedLoggedOff)
+            if (e.Event == ConnectionEvent.eConnectionEvent.eceConnect)
             {
-                ClientContainer.UserEvent(UserEventType.LogOut, this);
-                this.NotifiedLoggedOff = true;
-                this.LoggedIn = false;
-                string ret = GameBox.RemoveByUID(User.UID);
-                String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (String b in rets)
+                ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " connected."), true);
+            }
+            else
+            {
+                if (!NotifiedLoggedOff)
                 {
-                    if (!ret.Equals("-1"))
+                    ClientContainer.UserEvent(UserEventType.LogOut, this);
+                    this.NotifiedLoggedOff = true;
+                    this.LoggedIn = false;
+                    string ret = GameBox.RemoveByUID(User.UID);
+                    String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (String b in rets)
                     {
-                        SocketMessage stemp2 = new SocketMessage("UNHOST");
-                        stemp2.Arguments.Add(b);
-                        ClientContainer.AllUserCommand(stemp2);
+                        if (!ret.Equals("-1"))
+                        {
+                            SocketMessage stemp2 = new SocketMessage("UNHOST");
+                            stemp2.Arguments.Add(b);
+                            ClientContainer.AllUserCommand(stemp2);
+                        }
                     }
                 }
+                ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " disconnected ."), true);
             }
-            ConsoleEventLog.addEvent(new ConsoleEvent("Client " + host + " disconnected because " + reason), true);
         }
     }
 }

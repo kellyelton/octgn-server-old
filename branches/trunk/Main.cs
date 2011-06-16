@@ -97,7 +97,7 @@ namespace Skylabs.oserver
             //ClientContainer.AllUserCommand(new NetShit.EndMessage());
             foreach (Client c in ClientContainer.Clients)
             {
-                c.Close("Server shutdown.", true);
+                c.Close();
             }
             foreach (HostedGame h in GameBox.Games)
             {
