@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using Skylabs.ConsoleHelper;
+using Skylabs.NetShit;
+using Skylabs.oserver.Containers;
 
 namespace Skylabs.Containers
 {
-    public class GameBox
+    public static class GameBox
     {
         public static ArrayList Games
         {
@@ -26,7 +28,7 @@ namespace Skylabs.Containers
 
         private static ArrayList _Games = new ArrayList();
 
-        public HostedGame this[int index]
+        public static HostedGame this[int index]
         {
             get
             {
@@ -46,6 +48,18 @@ namespace Skylabs.Containers
             ConsoleEventLog.addEvent(new ConsoleEvent("#Hosting game: ", game.Name + ": " + game.Description), true);
             //h.Server = new Octgn.Server.Server(port, false, G, V);
             return i;
+        }
+
+        public static void UserJoinGame(int UID, int GameID)
+        {
+            HostedGame hg = (HostedGame)Games[GameID];
+            if (hg != null)
+            {
+                hg.Users.Add(UID);
+                SocketMessage sm = new SocketMessage("JOINGAME");
+                sm.Arguments.Add(ClientContainer.getClientFromUID(UID).User.Email);
+                ClientContainer.getClientFromUID(hg.UID).writeMessage(sm);
+            }
         }
 
         public static String RemoveByUID(int UID)
