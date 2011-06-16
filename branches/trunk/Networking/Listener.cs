@@ -1,80 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net.Sockets;
 using System.Net;
-using System.Threading;
+using System.Net.Sockets;
 using Skylabs.oserver;
 using Skylabs.oserver.Containers;
-using Skylabs.ConsoleHelper;
 
 namespace Skylabs.Networking
 {
     public class Listener
     {
         public TcpListener Sock;
-        private Thread thread;
-        private Boolean endIt = false;
 
         public Listener(String host, int port)
         {
             IPAddress ip = null;
             host = host.Trim();
-            if(host.Equals("*") || host.Equals(""))
+            if (host.Equals("*") || host.Equals(""))
                 ip = IPAddress.Any;
             else
             {
                 IPAddress.Parse(host);
-            } 
+            }
             Sock = new TcpListener(ip, port);
-            thread = new Thread(new ThreadStart(run));
-            thread.Name = "ServerThread";
-            
         }
+
         public void Start()
         {
-            thread.Start();
+            Sock.Start(1);
+            Sock.BeginAcceptTcpClient(new AsyncCallback(SockConnect), Sock);
         }
+
+        private void SockConnect(IAsyncResult AsyncCall)
+        {
+            //Accept the connection.
+            TcpListener listener = (TcpListener)AsyncCall.AsyncState;
+            Client c = new Client();
+            c.GetAcceptedSocket(listener.EndAcceptTcpClient(AsyncCall));
+            ClientContainer.AddClient(c);
+            Start();
+        }
+
         public void Stop()
         {
-            endIt = true;
-        }
-        private void run()
-        {
-            try
-            {
-                Sock.Start();
-            }
-            catch (SocketException e)
-            {
-                ConsoleEventLog.addEvent(new ConsoleEventError("Socket error.", e), true);
-                MainClass.Stop();
-            }
-            Sock.Server.ReceiveTimeout = 500;
-            Sock.Server.SendTimeout = 500;
-            Sock.Server.Blocking = false;
-            Sock.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
-            while (!endIt)
-            {
-                Client c = new Client();
-                try
-                {
-                    c.GetAcceptedSocket(Sock.AcceptTcpClient());
-                    ClientContainer.AddClient(c);
-                }
-                catch (InvalidOperationException ioe)
-                {
-                    
-                }
-                catch (SocketException se)
-                {
-                    if (se.SocketErrorCode == SocketError.WouldBlock)
-                    {
-                        Thread.Sleep(1000);
-                    }
-                }
-            }
+            Sock.Stop();
         }
     }
 }
