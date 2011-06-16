@@ -4,7 +4,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
-using HTMLConverter;
 using Skylabs.ConsoleHelper;
 using Skylabs.Containers;
 using Skylabs.NetShit;
@@ -42,7 +41,7 @@ namespace Skylabs.oserver
                     {
                         String fullhtml = m.Groups[1].Value;
                         //ConsoleWriter.writeLine(fullhtml, true);
-                        String xaml = HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
+                        String xaml = "";// HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
                         if (!xaml.Trim().Equals(""))
                         {
                             SocketMessage sm = new SocketMessage("XAMLCHAT");

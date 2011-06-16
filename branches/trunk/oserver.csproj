@@ -85,10 +85,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\..\c#\HTMLtoXAMLConverter\convertHTML.csproj">
-      <Project>{E1F3F7A0-5FE8-447D-B2EE-065B770B0712}</Project>
-      <Name>convertHTML</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\NetShit\trunk\NetShit.csproj">
       <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
       <Name>NetShit</Name>
