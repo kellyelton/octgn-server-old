@@ -67,7 +67,10 @@ namespace Skylabs.oserver
                     Reader.Close();
                     connection.Close();
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    ConsoleEventLog.addEvent(new ConsoleEventError(ex.Message, ex), true);
+                }
             }
             return false;
             //Failure

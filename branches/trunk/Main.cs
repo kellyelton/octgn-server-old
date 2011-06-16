@@ -90,7 +90,13 @@ namespace Skylabs.oserver
                     break;
                 if (fKillTime > 0)
                     fKillTime -= 1;
-                Thread.Sleep(1000);
+                if (fKillTime > -1)
+                    Thread.Sleep(1000);
+                else
+                {
+                    ClientContainer.AllUserCommand(new PingMessage());
+                    Thread.Sleep(30000);
+                }
             }
             //IrcBot.Stop();
             new ConsoleEvent("Quitting...").writeEvent(true);
