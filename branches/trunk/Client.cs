@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading;
 using Skylabs.ConsoleHelper;
-using Skylabs.Containers;
+using Skylabs.Lobby;
+using Skylabs.Lobby.Containers;
 using Skylabs.NetShit;
 using Skylabs.oserver.Containers;
 
@@ -22,6 +21,49 @@ namespace Skylabs.oserver
         private User _User = new User();
         private Boolean isRc = false;
 
+        private void iLogin(SocketMessage input)
+        {
+            Boolean worked = UserMysql.login(this, input.Arguments[0], input.Arguments[1]);
+            if(worked)
+            {
+                //See if we are already logged on width a different client.
+                //If we are, dominate him and destroy his connection.
+                for(int i = 0; i < ClientContainer.Clients.Count; i++)
+                {
+                    if(ClientContainer.Clients[i].User.UID == User.UID)
+                    {
+                        if(ClientContainer.Clients[i].ID != this.ID)
+                        {
+                            if(ClientContainer.Clients[i].Connected)
+                            {
+                                //Domination///////////////////////////////////////////////////////////////
+                                ClientContainer.UserEvent(UserEventType.LogOut, ClientContainer.Clients[i]);
+                                //////////////////////////////////////////
+                                //     _________________.---.______     //
+                                //    (_(______________(_o o_(____()    //
+                                //                 .___.'. .'.___.      //
+                                //                 \ o    Y    o /      //
+                                //  DISTRUCTION     \ \__   __/ /       //
+                                //                   '.__'-'__.'        //
+                                //    BOOOOOOM!          ```            //
+                                //////////////////////////////////////////
+                                ClientContainer.Clients[i].Close();
+                            }
+                        }
+                    }
+                }
+                writeMessage(SocketMessages.LoginSuccess(this.User));
+                ClientContainer.UserEvent(UserEventType.LogIn, this);
+                //this.writeMessage(SockMessages.ChatInfo(MainClass.getDailyMessage()));
+                LoggedIn = true;
+            }
+            else
+            {
+                writeMessage(SocketMessages.LoginError());
+                LoggedIn = false;
+            }
+        }
+
         override protected void handleError(object me, Exception e, String error)
         {
             ConsoleEventLog.addEvent(new ConsoleEventError(error, e), true);
@@ -29,92 +71,12 @@ namespace Skylabs.oserver
 
         override protected void handleInput(object me, SocketMessage input)
         {
-            if (!LoggedIn)
+            if(!LoggedIn)
             {
-                switch (input.Header)
+                switch(input.Header)
                 {
                     case "LOG":
-                        Boolean worked = UserMysql.login(this, input.Arguments[0], input.Arguments[1]);
-                        if (worked)
-                        {
-                            for (int i = 0; i < ClientContainer.Clients.Count; i++)
-                            {
-                                if (ClientContainer.Clients[i].User.UID == User.UID)
-                                {
-                                    if (ClientContainer.Clients[i].ID != this.ID)
-                                    {
-                                        if (ClientContainer.Clients[i].Connected)
-                                        {
-                                            ClientContainer.UserEvent(UserEventType.LogOut, ClientContainer.Clients[i]);
-                                            ClientContainer.Clients[i].Close();
-                                        }
-                                    }
-                                }
-                            }
-                            SocketMessage sm;
-                            if (input.Arguments.Count < 3)
-                            {
-                                sm = new SocketMessage("LOGSUCCESS");
-                                sm.Arguments.Add(this.User.Username);
-                                writeMessage(sm);
-                                ClientContainer.UserEvent(UserEventType.LogIn, this);
-                                Thread th = new Thread(new ThreadStart(delegate()
-                                {
-                                    Thread.Sleep(1000);
-                                    sm = new SocketMessage("CHATINFO");
-                                    sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
-                                    this.writeMessage(sm);
-                                    sm = new SocketMessage("CHATINFO");
-                                    sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
-                                    ClientContainer.AllUserCommand(sm);
-                                    Thread.Sleep(1000);
-                                    this.Close();
-                                }
-                                ));
-                                th.Start();
-                            }
-                            else
-                            {
-                                if (!input.Arguments[2].Equals(MainClass.getCurRevision().Trim()))
-                                {
-                                    sm = new SocketMessage("LOGSUCCESS");
-                                    sm.Arguments.Add(this.User.Username);
-                                    writeMessage(sm);
-                                    ClientContainer.UserEvent(UserEventType.LogIn, this);
-                                    Thread th = new Thread(new ThreadStart(delegate()
-                                        {
-                                            Thread.Sleep(1000);
-                                            sm = new SocketMessage("CHATINFO");
-                                            sm.Arguments.Add("YOU DO NOT HAVE THE LATEST LOBBY VERSION. PLEASE VISIT http://www.skylabsonline.com/blog/project/octgn-w-lobby/ TO GET IT!");
-                                            this.writeMessage(sm);
-                                            sm = new SocketMessage("CHATINFO");
-                                            sm.Arguments.Add("User " + this.User.Username + " could not log in because he/she needs an update.");
-                                            ClientContainer.AllUserCommand(sm);
-                                            Thread.Sleep(1000);
-                                            this.Close();
-                                        }
-                                    ));
-                                    th.Start();
-                                }
-                                else
-                                {
-                                    sm = new SocketMessage("LOGSUCCESS");
-                                    sm.Arguments.Add(this.User.Username);
-                                    writeMessage(sm);
-                                    ClientContainer.UserEvent(UserEventType.LogIn, this);
-                                    sm = new SocketMessage("CHATINFO");
-                                    sm.Arguments.Add(MainClass.getDailyMessage());
-                                    this.writeMessage(sm);
-                                    LoggedIn = true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            SocketMessage sm = new SocketMessage("LOGERROR");
-                            writeMessage(sm);
-                            LoggedIn = false;
-                        }
+                        iLogin(input);
                         break;
                     case "REG":
                         String nick = input.Arguments[0];
@@ -129,33 +91,19 @@ namespace Skylabs.oserver
                         break;
                 }
             }
-            else if (LoggedIn)
+            else if(LoggedIn)
             {
-                switch (input.Header)
+                switch(input.Header)
                 {
                     case "GETONLINELIST":
-
-                        StringBuilder sb = new StringBuilder();
-                        SocketMessage sm = new SocketMessage("ONLINELIST");
-                        List<User> listOnlineUsers = ClientContainer.getOnlineUserList();
-                        int intOnlineUsers = listOnlineUsers.Count;
-                        for (int i = 0; i < intOnlineUsers; i++)
-                        {
-                            sb = new StringBuilder();
-                            sb.Append(listOnlineUsers[i].Email);
-                            sb.Append(':');
-                            sb.Append(listOnlineUsers[i].Username);
-                            sb.Append(':');
-                            sb.Append(listOnlineUsers[i].Status.ToString());
-                            sm.Arguments.Add(sb.ToString());
-                        }
-                        writeMessage(sm);
+                        writeMessage(SocketMessages.OnlineUserList(ClientContainer.getOnlineUserList()));
                         break;
                     case "LOBCHAT":
                         ClientContainer.LobbyChat(User.Username, input.Arguments[0].Trim());
                         break;
                     case "HOST":
-                        HostedGame h = new HostedGame(User.UID, input.Arguments[0], input.Arguments[1]);
+                        //HACK Should serialize game data and send it here.
+                        HostedGame h = new HostedGame(User.UID, input.Arguments[0], input.Arguments[1], 8088);
                         int gID = GameBox.AddGame(h);
                         SocketMessage stemp = input;
                         stemp.Arguments.Add(this.User.Username);
@@ -166,9 +114,9 @@ namespace Skylabs.oserver
                     case "UNHOST":
                         string ret = GameBox.RemoveByUID(User.UID);
                         String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (String b in rets)
+                        foreach(String b in rets)
                         {
-                            if (!ret.Equals("-1"))
+                            if(!ret.Equals("-1"))
                             {
                                 SocketMessage stemp2 = input;
                                 stemp2.Arguments.Add(b);
@@ -183,10 +131,10 @@ namespace Skylabs.oserver
                         break;
                     case "GAMELIST":
                         int mGames = GameBox.Games.Count;
-                        for (int i = 0; i < mGames; i++)
+                        for(int i = 0; i < mGames; i++)
                         {
                             HostedGame hg = (HostedGame)GameBox.Games[i];
-                            if (hg.Available)
+                            if(hg.Available)
                             {
                                 SocketMessage stemp3 = new SocketMessage("GAMELIST");
                                 //GameID
@@ -208,14 +156,17 @@ namespace Skylabs.oserver
                         try
                         {
                             int gid = int.Parse(input.Arguments[0]);
-                            if (gid < GameBox.Games.Count)
+                            if(gid < GameBox.Games.Count)
                             {
-                                HostedGame hg = (HostedGame)GameBox.Games[gid];
-                                if (hg.Available)
+                                HostedGame hg = GameBox.Games[gid];
+                                if(hg.Available)
                                 {
                                     Client tclient = ClientContainer.getClientFromUID(hg.UID);
-                                    if (tclient != null)
+                                    if(tclient != null)
+                                    {
+                                        input.Arguments.Insert(1, Encoding.ASCII.GetString(User.Serialize(User)));
                                         tclient.writeMessage(input);
+                                    }
 #if DEBUG
                                     else
                                         System.Diagnostics.Debugger.Break();
@@ -223,7 +174,7 @@ namespace Skylabs.oserver
                                 }
                             }
                         }
-                        catch (FormatException fe)
+                        catch(FormatException fe)
                         {
                         }
                         break;
@@ -234,10 +185,10 @@ namespace Skylabs.oserver
                         break;
                 }
             }
-            if (isRc)
+            if(isRc)
             {
                 ConsoleEventLog.addEvent(new ConsoleEvent("#RC: ", input.getMessage()), true);
-                switch (input.Header)
+                switch(input.Header)
                 {
                     case "1":
                         SocketMessage sm = new SocketMessage("CHATINFO");
@@ -253,7 +204,7 @@ namespace Skylabs.oserver
                             int time = int.Parse(input.Arguments[0]);
                             MainClass.TimeKillServer(time, null);
                         }
-                        catch (Exception e)
+                        catch(Exception e)
                         {
                         }
                         break;
@@ -263,7 +214,7 @@ namespace Skylabs.oserver
                             int time = int.Parse(input.Arguments[0]);
                             MainClass.TimeKillServer(time, input.Arguments[1]);
                         }
-                        catch (Exception e)
+                        catch(Exception e)
                         {
                         }
                         break;
@@ -273,22 +224,22 @@ namespace Skylabs.oserver
 
         override protected void handleConnectionEvent(object Sender, ConnectionEvent e)
         {
-            if (e.Event == ConnectionEvent.eConnectionEvent.eceConnect)
+            if(e.Event == ConnectionEvent.eConnectionEvent.eceConnect)
             {
                 ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " connected."), true);
             }
             else
             {
-                if (!NotifiedLoggedOff)
+                if(!NotifiedLoggedOff)
                 {
                     ClientContainer.UserEvent(UserEventType.LogOut, this);
                     this.NotifiedLoggedOff = true;
                     this.LoggedIn = false;
                     string ret = GameBox.RemoveByUID(User.UID);
                     String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (String b in rets)
+                    foreach(String b in rets)
                     {
-                        if (!ret.Equals("-1"))
+                        if(!ret.Equals("-1"))
                         {
                             SocketMessage stemp2 = new SocketMessage("UNHOST");
                             stemp2.Arguments.Add(b);

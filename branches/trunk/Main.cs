@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using Skylabs.ConsoleHelper;
-using Skylabs.Containers;
+using Skylabs.Lobby;
+using Skylabs.Lobby.Containers;
 using Skylabs.NetShit;
 using Skylabs.Networking;
 using Skylabs.oserver.Containers;
@@ -26,7 +27,7 @@ namespace Skylabs.oserver
         public static void WriteAd(TimeSpan lastAd)
         {
             return;
-            if (lastAd >= timebetweenads)
+            if(lastAd >= timebetweenads)
             {
                 WebClient wc = new WebClient();
                 try
@@ -37,12 +38,12 @@ namespace Skylabs.oserver
                     ad = ad.Replace("\\\\\\", "\\");
                     Regex r = new Regex("^document\\.write\\(\"(.+)+\"\\);$");
                     Match m = r.Match(ad);
-                    if (m.Groups.Count >= 2)
+                    if(m.Groups.Count >= 2)
                     {
                         String fullhtml = m.Groups[1].Value;
                         //ConsoleWriter.writeLine(fullhtml, true);
                         String xaml = "";// HtmlToXamlConverter.ConvertHtmlToXaml(fullhtml, true);
-                        if (!xaml.Trim().Equals(""))
+                        if(!xaml.Trim().Equals(""))
                         {
                             SocketMessage sm = new SocketMessage("XAMLCHAT");
                             sm.Arguments.Add("SUPPORT");
@@ -53,7 +54,7 @@ namespace Skylabs.oserver
                     }
                     //ConsoleWriter.writeLine(evalstring, true);
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                 }
             }
@@ -66,7 +67,7 @@ namespace Skylabs.oserver
             ConsoleReader.Start();
             ConsoleWriter.CommandText = "O-Lobby: ";
             RootPath = System.IO.Directory.GetCurrentDirectory();
-            if (!LoadProperties())
+            if(!LoadProperties())
                 return;
             ConsoleWriter.writeCT();
             String host = getProperty("BindInt");
@@ -77,35 +78,35 @@ namespace Skylabs.oserver
                 Server = new Listener(host, port);
                 Server.Start();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Problem with settings 'BindInt' or 'BindPort'." + host + ":" + sport, e), true);
                 Stop();
                 return;
             }
             //IrcBot.Start();
-            while (endIt == false)
+            while(endIt == false)
             {
-                if (fKillTime == 0)
+                if(fKillTime == 0)
                     break;
-                if (fKillTime > 0)
+                if(fKillTime > 0)
                     fKillTime -= 1;
-                if (fKillTime > -1)
+                if(fKillTime > -1)
                     Thread.Sleep(1000);
                 else
                 {
-                    ClientContainer.AllUserCommand(new PingMessage());
+                    //ClientContainer.AllUserCommand(new PingMessage());
                     Thread.Sleep(30000);
                 }
             }
             //IrcBot.Stop();
             new ConsoleEvent("Quitting...").writeEvent(true);
             //ClientContainer.AllUserCommand(new NetShit.EndMessage());
-            foreach (Client c in ClientContainer.Clients)
+            foreach(Client c in ClientContainer.Clients)
             {
                 c.Close();
             }
-            foreach (HostedGame h in GameBox.Games)
+            foreach(HostedGame h in GameBox.Games)
             {
                 //h.Server.Stop();
             }
@@ -126,7 +127,7 @@ namespace Skylabs.oserver
             fKillTime = time;
             SocketMessage sm = new SocketMessage("CHATINFO");
             String mess = "Server shutting down in " + fKillTime.ToString() + " seconds. ";
-            if (message != null && !String.IsNullOrEmpty(message))
+            if(message != null && !String.IsNullOrEmpty(message))
                 mess += "\n Reason: " + message;
             sm.Arguments.Add(mess);
             ClientContainer.AllUserCommand(sm);
@@ -151,7 +152,7 @@ namespace Skylabs.oserver
 
         private static void ConsoleReader_eConsoleInput(ConsoleMessage input)
         {
-            switch (input.Header)
+            switch(input.Header)
             {
                 case "quit":
                     Stop();
@@ -187,7 +188,7 @@ namespace Skylabs.oserver
             {
                 ret = Properties.GetElementsByTagName(ID).Item(0).InnerText;
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ret = "";
             }
@@ -201,7 +202,7 @@ namespace Skylabs.oserver
             {
                 s = System.IO.File.ReadAllText(Path.Combine(RootPath, "currevision.txt"));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Problem opening revision file.", e), true);
             }
@@ -215,7 +216,7 @@ namespace Skylabs.oserver
             {
                 s = System.IO.File.ReadAllText(Path.Combine(RootPath, getProperty("DailyMessage")));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Problem opening daily message.", e), true);
             }
@@ -237,9 +238,9 @@ namespace Skylabs.oserver
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                if (f != null)
+                if(f != null)
                     f.Close();
                 new ConsoleEventError("Could not load the settings file.", ex).writeEvent(true);
                 ret = false;

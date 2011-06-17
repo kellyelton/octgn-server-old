@@ -47,6 +47,9 @@
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ConsoleHelper">
+      <HintPath>..\..\..\c#\ConsoleHelper\ConsoleHelper\bin\Release\ConsoleHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.JScript" />
     <Reference Include="System">
     </Reference>
@@ -61,26 +64,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
-    <Compile Include="ConsoleHelper\ConsoleEvent.cs" />
-    <Compile Include="ConsoleHelper\ConsoleEventError.cs" />
-    <Compile Include="ConsoleHelper\ConsoleEventLog.cs" />
-    <Compile Include="ConsoleHelper\ConsoleMessage.cs" />
-    <Compile Include="ConsoleHelper\ConsoleReader.cs" />
-    <Compile Include="ConsoleHelper\ConsoleWriter.cs" />
     <Compile Include="Containers\ClientContainer.cs" />
-    <Compile Include="Containers\GameBox.cs" />
-    <Compile Include="HostedGame.cs" />
-    <Compile Include="IrcBot.cs" />
+    <Compile Include="Junk\IrcBot.cs" />
     <Compile Include="javascripteval.cs" />
     <Compile Include="Main.cs" />
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Junk\AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="User.cs" />
     <Compile Include="UserMysql.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -89,9 +83,13 @@
       <Project>{B637235E-7CC5-4600-BA00-46F5FACD2DE4}</Project>
       <Name>NetShit</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Users\d0c\Documents\Visual Studio 2010\Projects\Lobby\LobbyClient\LobbyClient.csproj">
+      <Project>{9155711C-4AAE-4DED-A04B-B2FB2FFE5181}</Project>
+      <Name>LobbyClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="Junk\app.config" />
     <None Include="emailalert.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
