@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -62,6 +63,7 @@ namespace Skylabs.oserver
 
         public static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             //Console.ForegroundColor = ConsoleColor.White;
             RegisterHandlers();
             ConsoleReader.Start();
@@ -114,6 +116,42 @@ namespace Skylabs.oserver
 
             UnregisterHandlers();
             ConsoleReader.Stop();
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            HandleCatchAll((Exception)e.ExceptionObject);
+        }
+
+        private static void HandleCatchAll(Exception e)
+        {
+#if(!DEBUG)
+            ConsoleColor f = Console.ForegroundColor;
+            ConsoleColor b = Console.BackgroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine();
+            Console.WriteLine("###################################");
+            Console.WriteLine("###ERROR###ERROR###ERROR###ERROR###");
+            Console.WriteLine("###    (Oh my god! A WhAt?!)    ###");
+            Console.WriteLine("###################################");
+            Console.Write("Message: ");
+            Console.Write(e.Message);
+            Console.WriteLine();
+            Console.WriteLine("##############STACK################");
+            Console.WriteLine();
+            Console.Write(e.StackTrace);
+            Console.WriteLine();
+            Console.WriteLine("#############ENDSTACK##############");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("So uh, yeah. That's about it. I feel \na little embarrassed about the way \nthat I acted there.");
+            Console.WriteLine("I don't think errors are that \nterrifying, especially this little bugger.");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("Well, anyways, have a nice day!");
+
+            Console.ForegroundColor = f;
+#else
+            Debugger.Break();
+#endif
         }
 
         public static void KillServer()
@@ -233,7 +271,7 @@ namespace Skylabs.oserver
 #if(DEBUG)
                 f = File.Open(Path.Combine(RootPath, "ServerOptions-Debug.xml"), FileMode.Open);
 #else
-                f = File.Open(Path.Combine(RootPath , "ServerOptions.xml"), FileMode.Open);
+                f = File.Open(Path.Combine(RootPath, "ServerOptions.xml"), FileMode.Open);
 #endif
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Skylabs.ConsoleHelper;
 using Skylabs.Lobby;
 using Skylabs.Lobby.Containers;
@@ -103,25 +102,25 @@ namespace Skylabs.oserver
                         break;
                     case "HOST":
                         //HACK Should serialize game data and send it here.
-                        HostedGame h = new HostedGame(User.UID, input.Arguments[0], input.Arguments[1], 8088);
+                        HostedGame h = HostedGame.DeSerialize(Convert.FromBase64String(input.Arguments[0]));
+                        h.UID = User.UID;
                         int gID = GameBox.AddGame(h);
-                        SocketMessage stemp = input;
-                        stemp.Arguments.Add(this.User.Username);
-                        stemp.Arguments.Add(gID.ToString());
-
+                        h.ID = gID;
+                        SocketMessage stemp = new SocketMessage("HOST");
+                        stemp.Arguments.Add(Convert.ToBase64String(HostedGame.Serialize(h)));
                         ClientContainer.AllUserCommand(stemp);
                         break;
                     case "UNHOST":
-                        string ret = GameBox.RemoveByUID(User.UID);
-                        String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach(String b in rets)
+                        int g = GameBox.GetGame(User);
+                        if(g != -1)
                         {
-                            if(!ret.Equals("-1"))
-                            {
-                                SocketMessage stemp2 = input;
-                                stemp2.Arguments.Add(b);
-                                ClientContainer.AllUserCommand(stemp2);
-                            }
+#if(DEBUG)
+                            ConsoleWriter.writeLine("#UNHOST", true);
+#endif
+                            SocketMessage stemp2 = new SocketMessage("UNHOST");
+                            stemp2.Arguments.Add(Convert.ToBase64String(HostedGame.Serialize(GameBox.Games[g])));
+                            ClientContainer.AllUserCommand(stemp2);
+                            GameBox.RemoveByUID(User.UID);
                         }
                         break;
                     case "STATUS":
@@ -149,6 +148,19 @@ namespace Skylabs.oserver
                             }
                         }
                         break;
+                    case "JOINGAME":
+                        HostedGame hgg = HostedGame.DeSerialize(Convert.FromBase64String(input.Arguments[0]));
+                        ConsoleWriter.writeLine("#JOINGAME(" + User.Username + ")", true);
+                        int gn = GameBox.GetGame(hgg.ID);
+                        if(gn > -1)
+                        {
+                            Client c = ClientContainer.getClientFromUID(GameBox.Games[gn].UID);
+                            if(c.User.UID != -1)
+                            {
+                                c.writeMessage(input);
+                            }
+                        }
+                        break;
                     case "GAMEFORWARD":
                         //Basically just forward the whole package to the Host, found by the game ID
                         //which resides at Argument 0
@@ -156,26 +168,26 @@ namespace Skylabs.oserver
                         try
                         {
                             int gid = int.Parse(input.Arguments[0]);
-                            if(gid < GameBox.Games.Count)
+                            HostedGame hg = GameBox.Games[GameBox.GetGame(gid)];
+                            if(hg.Available)
                             {
-                                HostedGame hg = GameBox.Games[gid];
-                                if(hg.Available)
+                                Client tclient = ClientContainer.getClientFromUID(hg.UID);
+                                if(tclient != null)
                                 {
-                                    Client tclient = ClientContainer.getClientFromUID(hg.UID);
-                                    if(tclient != null)
-                                    {
-                                        input.Arguments.Insert(1, Encoding.ASCII.GetString(User.Serialize(User)));
-                                        tclient.writeMessage(input);
-                                    }
-#if DEBUG
-                                    else
-                                        System.Diagnostics.Debugger.Break();
-#endif
+                                    input.Arguments.Insert(1, Convert.ToBase64String(User.Serialize(User)));
+                                    tclient.writeMessage(input);
                                 }
+#if DEBUG
+                                else
+                                    System.Diagnostics.Debugger.Break();
+#endif
                             }
                         }
                         catch(FormatException fe)
                         {
+#if DEBUG
+                            System.Diagnostics.Debugger.Break();
+#endif
                         }
                         break;
                     default:

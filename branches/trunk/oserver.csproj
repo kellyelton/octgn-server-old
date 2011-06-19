@@ -53,8 +53,7 @@
     <Reference Include="Microsoft.JScript" />
     <Reference Include="System">
     </Reference>
-    <Reference Include="System.Data">
-    </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml">
     </Reference>
