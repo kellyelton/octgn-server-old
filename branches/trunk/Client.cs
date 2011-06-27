@@ -161,6 +161,19 @@ namespace Skylabs.oserver
                             }
                         }
                         break;
+                    case "LEAVEGAME":
+                        HostedGame hggg = HostedGame.DeSerialize(Convert.FromBase64String(input.Arguments[0]));
+                        ConsoleWriter.writeLine("#LEAVEGAME(" + User.Username + ")", true);
+                        int gnn = GameBox.GetGame(hggg.ID);
+                        if(gnn > -1)
+                        {
+                            Client c = ClientContainer.getClientFromUID(GameBox.Games[gnn].UID);
+                            if(c.User.UID != -1)
+                            {
+                                c.writeMessage(input);
+                            }
+                        }
+                        break;
                     case "GAMEFORWARD":
                         //Basically just forward the whole package to the Host, found by the game ID
                         //which resides at Argument 0
@@ -171,16 +184,30 @@ namespace Skylabs.oserver
                             HostedGame hg = GameBox.Games[GameBox.GetGame(gid)];
                             if(hg.Available)
                             {
-                                Client tclient = ClientContainer.getClientFromUID(hg.UID);
-                                if(tclient != null)
+                                if(hg.UID != User.UID)
                                 {
-                                    input.Arguments.Insert(1, Convert.ToBase64String(User.Serialize(User)));
-                                    tclient.writeMessage(input);
-                                }
+                                    Client tclient = ClientContainer.getClientFromUID(hg.UID);
+                                    if(tclient != null)
+                                    {
+                                        input.Arguments.Insert(1, Convert.ToBase64String(User.Serialize(User)));
+                                        tclient.writeMessage(input);
+                                    }
 #if DEBUG
-                                else
-                                    System.Diagnostics.Debugger.Break();
+                                    else
+                                        System.Diagnostics.Debugger.Break();
 #endif
+                                }
+                                else
+                                {
+                                    int cid = int.Parse(input.Arguments[2]);
+                                    Client tclient = ClientContainer.getClientFromUID(cid);
+                                    if(tclient != null)
+                                    {
+                                        input.Arguments.RemoveAt(2);
+                                        input.Arguments.Insert(1, Convert.ToBase64String(User.Serialize(tclient.User)));
+                                        tclient.writeMessage(input);
+                                    }
+                                }
                             }
                         }
                         catch(FormatException fe)
