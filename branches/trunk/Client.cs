@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Skylabs.ConsoleHelper;
 using Skylabs.Lobby;
 using Skylabs.Lobby.Containers;
@@ -136,14 +137,7 @@ namespace Skylabs.oserver
                             if(hg.Available)
                             {
                                 SocketMessage stemp3 = new SocketMessage("GAMELIST");
-                                //GameID
-                                stemp3.Arguments.Add(hg.ID.ToString());
-                                //UserEmail
-                                stemp3.Arguments.Add(ClientContainer.getClientFromUID(hg.UID).User.Email);
-                                //GameName
-                                stemp3.Arguments.Add(hg.Name);
-                                //Description
-                                stemp3.Arguments.Add(hg.Description);
+                                stemp3.Arguments.Add(Convert.ToBase64String(HostedGame.Serialize(hg)));
                                 this.writeMessage(stemp3);
                             }
                         }
@@ -274,16 +268,13 @@ namespace Skylabs.oserver
                     ClientContainer.UserEvent(UserEventType.LogOut, this);
                     this.NotifiedLoggedOff = true;
                     this.LoggedIn = false;
-                    string ret = GameBox.RemoveByUID(User.UID);
-                    String[] rets = ret.Split(new char[1] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach(String b in rets)
+                    List<HostedGame> ret = GameBox.RemoveByUID(User.UID);
+                    foreach(HostedGame b in ret)
                     {
-                        if(!ret.Equals("-1"))
-                        {
-                            SocketMessage stemp2 = new SocketMessage("UNHOST");
-                            stemp2.Arguments.Add(b);
-                            ClientContainer.AllUserCommand(stemp2);
-                        }
+                        SocketMessage stemp2 = new SocketMessage("UNHOST");
+                        String gstring = Convert.ToBase64String(HostedGame.Serialize(b));
+                        stemp2.Arguments.Add(gstring);
+                        ClientContainer.AllUserCommand(stemp2);
                     }
                 }
                 ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " disconnected ."), true);
