@@ -92,5 +92,13 @@ namespace oserverremote
             sm.Arguments.Add("1.0.1.17");
             sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SocketMessage sm = new SocketMessage("1");
+            sm.Arguments.Add(textBox1.Text);
+            sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
+            addline("Output: " + sm.getMessage());
+        }
     }
 }

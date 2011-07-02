@@ -1,7 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
@@ -68,7 +68,8 @@ namespace Skylabs.oserver
             RegisterHandlers();
             ConsoleReader.Start();
             ConsoleWriter.CommandText = "O-Lobby: ";
-            RootPath = System.IO.Directory.GetCurrentDirectory();
+            RootPath = Directory.GetParent(Assembly.GetExecutingAssembly().Location).ToString();
+            //RootPath = System.IO.Directory.GetCurrentDirectory();
             if(!LoadProperties())
                 return;
             ConsoleWriter.writeCT();
@@ -150,7 +151,7 @@ namespace Skylabs.oserver
 
             Console.ForegroundColor = f;
 #else
-            Debugger.Break();
+            System.Diagnostics.Debugger.Break();
 #endif
         }
 
@@ -266,13 +267,15 @@ namespace Skylabs.oserver
             Properties = new XmlDocument();
             Boolean ret = true;
             FileStream f = null;
+            String path = "";
             try
             {
 #if(DEBUG)
-                f = File.Open(Path.Combine(RootPath, "ServerOptions-Debug.xml"), FileMode.Open);
+                path = Path.Combine(RootPath, "ServerOptions-Debug.xml");
 #else
-                f = File.Open(Path.Combine(RootPath, "ServerOptions.xml"), FileMode.Open);
+                path = Path.Combine(RootPath, "ServerOptions.xml");
 #endif
+                f = File.Open(path, FileMode.Open);
                 Properties.Load(f);
                 new ConsoleEvent("#Event: ", "Settings file loaded.").writeEvent(true);
             }
@@ -280,7 +283,7 @@ namespace Skylabs.oserver
             {
                 if(f != null)
                     f.Close();
-                new ConsoleEventError("Could not load the settings file.", ex).writeEvent(true);
+                new ConsoleEventError("Could not load the settings file at " + path, ex).writeEvent(true);
                 ret = false;
             }
             return ret;

@@ -257,11 +257,7 @@ namespace Skylabs.oserver
 
         override protected void handleConnectionEvent(object Sender, ConnectionEvent e)
         {
-            if(e.Event == ConnectionEvent.eConnectionEvent.eceConnect)
-            {
-                ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " connected."), true);
-            }
-            else
+            if(e.Event != ConnectionEvent.eConnectionEvent.eceConnect)
             {
                 if(!NotifiedLoggedOff)
                 {
@@ -277,7 +273,6 @@ namespace Skylabs.oserver
                         ClientContainer.AllUserCommand(stemp2);
                     }
                 }
-                ConsoleEventLog.addEvent(new ConsoleEvent("Client " + e.Host + " disconnected ."), true);
             }
         }
     }

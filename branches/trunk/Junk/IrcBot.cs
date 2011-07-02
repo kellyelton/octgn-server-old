@@ -49,7 +49,7 @@ namespace Skylabs
 
         private static void Run()
         {
-            while (run)
+            while(run)
             {
                 irc = null;
                 _users = new String[0];
@@ -58,7 +58,7 @@ namespace Skylabs
                     irc = new TcpClient(SERVER, PORT);
                     //irc.Client.Blocking = true;
                 }
-                catch (Exception e)
+                catch(Exception e)
                 {
                     ConsoleEventLog.addEvent(new ConsoleEventError("Irc Connect Error: ", e), true);
                     continue;
@@ -74,7 +74,7 @@ namespace Skylabs
                 writer.Flush();
 
                 int ii = 0;
-                while (ii == 0)
+                while(ii == 0)
                 {
                     try
                     {
@@ -82,26 +82,26 @@ namespace Skylabs
                         string t = inputLine.Substring(1);
                         SERVERNAME = t.Split(' ')[0];
                         inputLine = reader.ReadLine();
-                        while (inputLine != null)
+                        while(inputLine != null)
                         {
                             HandleLine(inputLine);
                             try
                             {
                                 inputLine = reader.ReadLine();
                             }
-                            catch (IOException e)
+                            catch(IOException e)
                             {
                                 SocketException se = e.InnerException as SocketException;
-                                if (se == null)
+                                if(se == null)
                                 {
                                     ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
                                     break;
                                 }
                                 else
                                 {
-                                    if (se.SocketErrorCode != SocketError.WouldBlock)
+                                    if(se.SocketErrorCode != SocketError.WouldBlock)
                                     {
-                                        if (se.SocketErrorCode != SocketError.TimedOut)
+                                        if(se.SocketErrorCode != SocketError.TimedOut)
                                         {
                                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
                                             break;
@@ -116,28 +116,28 @@ namespace Skylabs
                         }
                         Thread.Sleep(1000);
                     }
-                    catch (SocketException se)
+                    catch(SocketException se)
                     {
-                        if (se.SocketErrorCode != SocketError.TimedOut)
+                        if(se.SocketErrorCode != SocketError.TimedOut)
                         {
                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc SocketException", se), true);
                             break;
                         }
                         Thread.Sleep(100);
                     }
-                    catch (IOException e)
+                    catch(IOException e)
                     {
                         SocketException se = e.InnerException as SocketException;
-                        if (se == null)
+                        if(se == null)
                         {
                             ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException", e), true);
                             break;
                         }
                         else
                         {
-                            if (se.SocketErrorCode != SocketError.WouldBlock)
+                            if(se.SocketErrorCode != SocketError.WouldBlock)
                             {
-                                if (se.SocketErrorCode != SocketError.TimedOut)
+                                if(se.SocketErrorCode != SocketError.TimedOut)
                                 {
                                     ConsoleEventLog.addEvent(new ConsoleEventError("Irc IOException:SocketException", e), true);
                                     break;
@@ -146,7 +146,7 @@ namespace Skylabs
                         }
                         Thread.Sleep(100);
                     }
-                    catch (Exception e)
+                    catch(Exception e)
                     {
                         ConsoleEventLog.addEvent(new ConsoleEventError("Irc Exception", e), true);
                         break;
@@ -167,27 +167,27 @@ namespace Skylabs
 
         private static void HandleLine(String line)
         {
-            ConsoleWriter.writeLine(line, false);
+            //ConsoleWriter.writeLine(line, false);
             //return;
-            if (line == null)
+            if(line == null)
                 return;
             //Split the line up into command parts
             string[] commandParts = line.Split(' ');
-            if (commandParts[0].Substring(0, 1) == ":")
+            if(commandParts[0].Substring(0, 1) == ":")
             {
                 commandParts[0] = commandParts[0].Remove(0, 1);
             }
-            if (commandParts[0] == SERVERNAME)
+            if(commandParts[0] == SERVERNAME)
             {
                 // Server message
-                switch (commandParts[1])
+                switch(commandParts[1])
                 {
                     // case "332": this.IrcTopic(commandParts); break;
                     //case "333": this.IrcTopicOwner(commandParts); break;
                     case "353":
                         string s = commandParts[1];
                         List<String> temp = new List<String>(0);
-                        for (int i = 6; i < commandParts.Length; i++)
+                        for(int i = 6; i < commandParts.Length; i++)
                             temp.Add(commandParts[i]);
                         _users = temp.ToArray();
                         break;
@@ -199,7 +199,7 @@ namespace Skylabs
                     //default: this.IrcServerMessage(commandParts); break;
                 }
             }
-            else if (commandParts[0] == "PING")
+            else if(commandParts[0] == "PING")
             {
                 // Server PING, send PONG back
                 WriteLine("PONG :" + commandParts[1].Replace(":", ""));
@@ -208,7 +208,7 @@ namespace Skylabs
             {
                 // Normal message
                 string commandAction = commandParts[1];
-                switch (commandAction)
+                switch(commandAction)
                 {
                     case "JOIN":
                         // Make sure that user isn't online first
@@ -231,15 +231,15 @@ namespace Skylabs
 
                     case "QUIT":
                         user = commandParts[2];
-                        if (user != null)
+                        if(user != null)
                         {
-                            if (UserOnline(user))
+                            if(UserOnline(user))
                             {
                                 String[] temp = new String[_users.Length - 1];
                                 int i = 0;
-                                foreach (String u in _users)
+                                foreach(String u in _users)
                                 {
-                                    if (!u.Equals(user))
+                                    if(!u.Equals(user))
                                     {
                                         temp[i] = u;
                                         i++;
@@ -266,7 +266,7 @@ namespace Skylabs
             line = line.Trim();
             try
             {
-                if (rpm.IsMatch(line))
+                if(rpm.IsMatch(line))
                 {
                     Match m = rpm.Match(line);
                     String user = m.Groups[1].Value;
@@ -275,18 +275,18 @@ namespace Skylabs
                     ClientContainer.LobbyChat("<irc>" + user, mess);
                     //ClientContainer.AllUserCommand(
                 }
-                else if (rMOTDdone.IsMatch(line))
+                else if(rMOTDdone.IsMatch(line))
                 {
                     WriteLine("JOIN " + CHANNEL + " x");
                 }
-                else if (rpmess.IsMatch(line))
+                else if(rpmess.IsMatch(line))
                 {
                     //TODO PM's go here, so put OP commands here
                     //1 is who it's from, 2 is who it goes to, and 3 is the message.
                     Match m = rpmess.Match(line);
-                    if (m.Groups[1].Value.Equals("StatServ"))
+                    if(m.Groups[1].Value.Equals("StatServ"))
                     {
-                        if (m.Groups[3].Value.Contains("VERSION"))
+                        if(m.Groups[3].Value.Contains("VERSION"))
                         {
                             WriteLine("JOIN " + CHANNEL + " x");
                         }
@@ -296,19 +296,19 @@ namespace Skylabs
                         PMUser(m.Groups[1].Value, "Replying is not implemented yet.");
                     }
                 }
-                else if (rquit.IsMatch(line))
+                else if(rquit.IsMatch(line))
                 {
                     Match m = rquit.Match(line);
                     String user = m.Groups[1].Value;
-                    if (user != null)
+                    if(user != null)
                     {
-                        if (UserOnline(user))
+                        if(UserOnline(user))
                         {
                             String[] temp = new String[_users.Length - 1];
                             int i = 0;
-                            foreach (String u in _users)
+                            foreach(String u in _users)
                             {
-                                if (!u.Equals(user))
+                                if(!u.Equals(user))
                                 {
                                     temp[i] = u;
                                     i++;
@@ -321,7 +321,7 @@ namespace Skylabs
                         }
                     }
                 }
-                else if (rjoin.IsMatch(line))
+                else if(rjoin.IsMatch(line))
                 {
                     // Make sure that user isn't online first
                     Match m = rjoin.Match(line);
@@ -337,7 +337,7 @@ namespace Skylabs
                     //sm.Arguments.Add("IRC User " + user + " online.");
                     //ClientContainer.AllUserCommand(sm);
                 }
-                else if (rpolist.IsMatch(line))
+                else if(rpolist.IsMatch(line))
                 {
                     Match m = rpolist.Match(line);
                     String strusers = m.Groups[1].Value;
@@ -345,7 +345,7 @@ namespace Skylabs
                     _users = strusers.Split(new char[1] { ' ' });
                     //ConsoleWriter.writeLine("#IRC-IN: " + line, true);
                 }
-                else if (line.Substring(0, 4).Equals("PING"))
+                else if(line.Substring(0, 4).Equals("PING"))
                 {
                     WriteLine("PONG :" + line.Substring(6).Trim());
                 }
@@ -354,7 +354,7 @@ namespace Skylabs
                     ConsoleWriter.writeLine("#IRC-IN: " + line, true);
                 }
             }
-            catch (ArgumentOutOfRangeException e)
+            catch(ArgumentOutOfRangeException e)
             {
                 ConsoleWriter.writeLine("#IRC-IN: " + line, true);
             }
@@ -362,11 +362,11 @@ namespace Skylabs
 
         public static Boolean UserOnline(String user)
         {
-            if (user != null)
+            if(user != null)
             {
-                foreach (String u in _users)
+                foreach(String u in _users)
                 {
-                    if (u.Equals(user))
+                    if(u.Equals(user))
                         return true;
                 }
                 return false;
@@ -387,7 +387,7 @@ namespace Skylabs
         public static void ChatAsUser(String username, String chat)
         {
             String user = username;
-            while (UserOnline(user))
+            while(UserOnline(user))
             {
                 user += "_";
             }
@@ -408,7 +408,7 @@ namespace Skylabs
                 writer.WriteLine(line);
                 writer.Flush();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
             }
         }
