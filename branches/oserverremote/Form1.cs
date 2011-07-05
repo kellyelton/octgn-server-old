@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Forms;
 using Skylabs.NetShit;
 
@@ -7,13 +6,18 @@ namespace oserverremote
 {
     public partial class Form1 : Form
     {
-        RawShitSock sock = new RawShitSock();
+        ShitSock sock = new ShitSock();
 
         public Form1()
         {
             InitializeComponent();
             sock.onConnectionEvent += new RawShitSock.dConnectionEvent(sock_onConnectionEvent);
-            sock.onInput += new RawShitSock.dOnInput(sock_onInput);
+            sock.onSocketMessageInput += new ShitSock.dOnSockMessageInput(sock_onSocketMessageInput);
+        }
+
+        private void sock_onSocketMessageInput(object Sender, SocketMessage sm)
+        {
+            addline("Input: " + sm.getMessage());
         }
 
         private void addline(string str)
@@ -30,13 +34,6 @@ namespace oserverremote
             }));
         }
 
-        private void sock_onInput(object Sender, ShitBag bag)
-        {
-            addline("Input: " + Encoding.ASCII.GetString(bag.buffer));
-            PingMessage pm = new PingMessage();
-            sock.WriteData(Encoding.ASCII.GetBytes(pm.getMessage()));
-        }
-
         private void sock_onConnectionEvent(object Sender, ConnectionEvent e)
         {
             if(e.Event == ConnectionEvent.eConnectionEvent.eceConnect)
@@ -44,7 +41,7 @@ namespace oserverremote
                 addline("#Connected");
                 SocketMessage sm = new SocketMessage("RC");
                 sm.getMessage();
-                sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
+                sock.writeMessage(sm);
                 //sock.writeMessage(sm);
             }
             else
@@ -80,7 +77,7 @@ namespace oserverremote
         {
             SocketMessage sm = new SocketMessage("1");
             sm.Arguments.Add(textBox1.Text);
-            sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
+            sock.writeMessage(sm);
             addline("Output: " + sm.getMessage());
         }
 
@@ -89,15 +86,16 @@ namespace oserverremote
             SocketMessage sm = new SocketMessage("LOG");
             sm.Arguments.Add(tbUsername.Text);
             sm.Arguments.Add(tbPassword.Text);
-            sm.Arguments.Add("1.0.1.17");
-            sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
+            sm.Arguments.Add("1.0.2.1");
+
+            sock.writeMessage(sm);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             SocketMessage sm = new SocketMessage("1");
             sm.Arguments.Add(textBox1.Text);
-            sock.WriteData(Encoding.ASCII.GetBytes(sm.getMessage()));
+            sock.writeMessage(sm);
             addline("Output: " + sm.getMessage());
         }
     }

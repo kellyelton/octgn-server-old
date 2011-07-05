@@ -168,6 +168,17 @@ namespace Skylabs.oserver
                             }
                         }
                         break;
+                    case "USERMESSAGE":
+                        User u = User.DeSerialize(Convert.FromBase64String(input.Arguments[0]));
+                        String m = input.Arguments[1];
+                        Client cl = ClientContainer.getClientFromUID(u.UID);
+                        if(cl.User.UID != -1)
+                        {
+                            input.Arguments[0] = Convert.ToBase64String(User.Serialize(this.User));
+                            cl.writeMessage(input);
+                            writeMessage(input);
+                        }
+                        break;
                     case "GAMEFORWARD":
                         //Basically just forward the whole package to the Host, found by the game ID
                         //which resides at Argument 0
