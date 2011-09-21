@@ -176,7 +176,7 @@ namespace Skylabs.oserver
                         {
                             input.Arguments[0] = Convert.ToBase64String(User.Serialize(this.User));
                             cl.writeMessage(input);
-                            writeMessage(input);
+                            //writeMessage(input);
                         }
                         break;
                     case "GAMEFORWARD":

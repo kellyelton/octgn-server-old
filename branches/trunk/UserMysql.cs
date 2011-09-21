@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
@@ -33,13 +32,13 @@ namespace Skylabs.oserver
             {
                 connection.Open();
                 Reader = command.ExecuteReader();
-                while (Reader.Read() == true)
+                while(Reader.Read() == true)
                 {
-                    if (!Reader.IsDBNull(0))
+                    if(!Reader.IsDBNull(0))
                     {
-                        for (int i = 0; i < Reader.FieldCount; i++)
+                        for(int i = 0; i < Reader.FieldCount; i++)
                         {
-                            switch (Reader.GetName(i))
+                            switch(Reader.GetName(i))
                             {
                                 case "uid":
                                     c.User.UID = Reader.GetInt32(i);
@@ -58,7 +57,7 @@ namespace Skylabs.oserver
                 Reader.Close();
                 connection.Close();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error1." + e.Message, e), true);
                 //TODO Some exception here if we lose connectivity, fix it, don't have the global catch all.
@@ -67,7 +66,7 @@ namespace Skylabs.oserver
                     Reader.Close();
                     connection.Close();
                 }
-                catch (Exception ex)
+                catch(Exception ex)
                 {
                     ConsoleEventLog.addEvent(new ConsoleEventError(ex.Message, ex), true);
                 }
@@ -99,24 +98,24 @@ namespace Skylabs.oserver
             nick = nick.Trim();
             email1 = email1.Trim().ToLower();
             pass1 = pass1.Trim();
-            if (String.IsNullOrEmpty(nick))
+            if(String.IsNullOrEmpty(nick))
             {
                 return "REGERR1";
             }
-            if (String.IsNullOrEmpty(email1))
+            if(String.IsNullOrEmpty(email1))
             {
                 return "REGERR1";
             }
             else
             {
                 Regex r = new Regex("^[\\w\\-]+(\\.[\\w\\-]+)*@([A-Za-z0-9-]+\\.)+[A-Za-z]{2,4}$");
-                if (!r.IsMatch(email1))
+                if(!r.IsMatch(email1))
                 {
                     return "REGERR1";
                 }
             }
 
-            if (pass1.Length < 6)
+            if(pass1.Length < 6)
             {
                 return "REGERR2";
             }
@@ -127,7 +126,7 @@ namespace Skylabs.oserver
             {
                 connection.Open();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error2.", e), true);
                 connection.Close();
@@ -139,9 +138,9 @@ namespace Skylabs.oserver
             try
             {
                 Reader = command.ExecuteReader();
-                if (Reader.Read() != false)
+                if(Reader.Read() != false)
                 {
-                    if (!Reader.IsDBNull(0))
+                    if(!Reader.IsDBNull(0))
                     {
                         Reader.Close();
                         connection.Close();
@@ -149,7 +148,7 @@ namespace Skylabs.oserver
                     }
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
                 Reader.Close();
@@ -162,9 +161,9 @@ namespace Skylabs.oserver
             try
             {
                 Reader = command.ExecuteReader();
-                if (Reader.Read() != false)
+                if(Reader.Read() != false)
                 {
-                    if (!Reader.IsDBNull(0))
+                    if(!Reader.IsDBNull(0))
                     {
                         Reader.Close();
                         connection.Close();
@@ -172,7 +171,7 @@ namespace Skylabs.oserver
                     }
                 }
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
                 Reader.Close();
@@ -182,11 +181,11 @@ namespace Skylabs.oserver
             Reader.Close();
 
             //Hash password
-            Encoding enc = Encoding.ASCII;
-            byte[] data = enc.GetBytes(pass1);
-            pass1 = BitConverter.ToString((new SHA1CryptoServiceProvider()).ComputeHash(data));
-            pass1 = pass1.Replace("-", "");
-            pass1 = pass1.ToLower();
+            //Encoding enc = Encoding.ASCII;
+            //byte[] data = enc.GetBytes(pass1);
+            //pass1 = BitConverter.ToString((new SHA1CryptoServiceProvider()).ComputeHash(data));
+            //pass1 = pass1.Replace("-", "");
+            //pass1 = pass1.ToLower();
 
             command.CommandText =
                     "INSERT INTO users (email,pass,username)"
@@ -204,7 +203,7 @@ namespace Skylabs.oserver
                 int uid = command.ExecuteNonQuery();
                 connection.Close();
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 ConsoleEventLog.addEvent(new ConsoleEventError("Mysql error.", e), true);
                 return "REGERR0";
